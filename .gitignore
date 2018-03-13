@@ -1,3 +1,12 @@
 node_modules
 .DS_Store
 npm-debug.log
+.DS_Store
+.vscode
+Chart
+Chart.js-2.7.2
+Chart.js-2.7.2 2
+Chart.js-2.7.2.tar
+package-lock.json
+student_info.json
+student.sql

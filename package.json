@@ -1,5 +1,5 @@
 {
-  "name": "student-information-system",
+  "name": "student_info",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -7,10 +7,14 @@
   },
   "dependencies": {
     "body-parser": "~1.18.2",
+    "chart.js": "^2.7.2",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "express": "~4.15.5",
+    "express-validation": "^1.0.2",
     "morgan": "~1.9.0",
+    "mysql": "github:mysqljs/mysql",
+    "npm": "^5.7.1",
     "pug": "2.0.0-beta11",
     "serve-favicon": "~2.4.5"
   },
@@ -29,5 +33,5 @@
     "url": "https://github.com/dyahayumt/student-information-system/issues"
   },
   "homepage": "https://github.com/dyahayumt/student-information-system#readme",
-  "description": ""
+  "description": "### This is a simple CRUD of Students Web Server-Client. There is student_info.sql which used as backup of database. With using : Javascript, mysql, bootstrap, and Google Chart"
 }

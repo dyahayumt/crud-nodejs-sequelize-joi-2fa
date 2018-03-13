@@ -2,31 +2,74 @@ html
   head
     title= 'Web Student'
     link(href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css', rel='stylesheet')
-  body(style='\
-  margin-top: 10px;\
-  margin-left: 10px;\
-  margin-bottom: 10px;\
-  margin-right: 10px;\
-  border-top: 40px;\
-  border-right: 40px;\
-  border-left: 40px;\
-  border-bottom: 40px;\
-  ')
-  form(action='/input', method='GET')
-    input.btn.btn-secondary(type='submit' value='Input New Student')
-  .container
-    h1= title
+    script(src='https://code.jquery.com/jquery-3.2.1.slim.min.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js')
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js')
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js')
+
+  body
+  html
+  body
+  nav.navbar.navbar-expand-sm.pull-sm-left(style='\
+left: 150px;\
+')  
+    form(action='/statistics', method='GET')
+                  input.btn.btn-secondary(type='submit' value='Get Students Gender Statistics')             
+    form(action='/input', method='GET')
+                  input.btn.btn-secondary(type='submit' value='Input New Student')
+    form(action='/search', method='POST')
+      .container-full
+        .row.searchFilter
+          .col-sm-10
+            .input-group
+              input#keyword.table_filter.form-control(type="text" name="keyword" aria-label="Text input with segmented button dropdown")
+              .input-group-btn
+                button.btn.btn-secondary.dropdown-toggle.dropdown-toggle-split(type="submit" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
+                  span.label-icon Category
+                  span.caret  
+                .dropdown-menu.dropdown-menu-right
+                  ul.category_filters
+                    li
+                      input#opt(type="radio" name="opt" value="student_id")
+                      label.category-label(for="student_id") ID
+                    li
+                      input#opt(type="radio" name="opt" value="first_name")
+                      label.category-label(for="first_name") First Name
+                    li
+                      input#opt(type="radio" name="opt" value="place_of_birth")
+                      label.category-label(for="place_of_birth") POB  
+              .input-group-btn
+                button.btn.btn-secondary.dropdown-toggle.dropdown-toggle-split(type="submit" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
+                  span.label-icon Sort By
+                  span.caret          
+                .dropdown-menu.dropdown-menu-right
+                  ul.category_filters
+                    li
+                      input#sortBy(type="radio" name="sortBy" value="ASC")
+                      label.category-label(for="sortBy") ASC
+                    li 
+                      input#sortBy(type="radio" name="sortBy" value="DESC")
+                      label.category-label(for="sortBy") DESC
+                button#search.Btn.btn.btn-secondary.btn-searcha.a(type="submit" href='/search/')
+                  span.glyphicon.glyphicon-search  
+                  span.label-icon Search
+  .container-full
+    h1.text-center Student List
     table.table
       thead.thead-light
-        tr
+         tr
           th= 'ID'
           th= 'First Name'
           th= 'Middle Name'
           th= 'Last Name'
+          th= 'Gender'
           th= 'Place of Birth'
           th= 'Date of Birth'
           th= 'Phone Number'
           th= 'Email Address'
+          th= 'Date Time'
+          th= 'Action'
       for student in data
         tr
           td= student.student_id
@@ -34,14 +77,50 @@ html
               a.student.first_name(href='/student/'+student.student_id) #{student.first_name}
           td= student.middle_name
           td= student.last_name
+          td= student.gender
           td= student.place_of_birth
           td= student.date_of_birth
           td= student.phone_number
           td= student.email_address
-          td 
-            a(href='/delete/'+student.student_id)
-              button.btn.btn-danger(type='button') Delete
-    script(src='https://code.jquery.com/jquery-3.2.1.slim.min.js')
-    script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js')
-    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js')
-    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js')
+          td= student.date_time
+          td
+           form.form-inline(action='/delete/'+student.student_id, method="POST" )
+                    button.btn.btn-info(type="submit", role='button', onclick="return confirm('are you sure want to delete ?')") Delete
+        p.table-center #{notif}
+//-             form.form-inline(action='/delete/'+student.id_student, method="POST" )
+//-             a(href='/students/'+student.student_id)
+//-               botton.btn.btn-success(type='botton')
+//-                 i.fa.fa-pencil
+//-             a(href='#')
+//-               botton.btn.btn-danger(type='botton', onclick='delete('+student.student_id+')')
+//-                 i.fa.fa-trash
+//- //Modal
+//- #myModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
+//-   .modal-dialog(role='document')
+//-     .modal-content
+//-       .modal-header
+//-         h5#exampleModalLabel.modal-title Warning
+//-         botton.close(type='botton', data-dismiss='modal', arial-label='Close')
+//-           span(aria-hidden='true') x 
+//-       .modal-body
+//-         | Are you sure to delete this information details?
+//-       .modal-footer
+//-         botton.btn.btn-danger(type='botton', onclick='deleteProcess()') Yes
+//-         botton.btn.btn-secondary(type='botton', data-dismiss='modal') No
+
+//- script(type='text/javascript').
+//-   function detete (e) {
+//-   window.idStudent = e;
+//-   $("#myModal").modal('show');
+//-   }        
+//-   function deteleProcess(){
+//-   var id = windows.idStudent;
+//-   $.ajax({
+//-   url: '/students/delete'+id,
+//-   type:'GET',
+//-   success : function (respon) {
+//-   setTimeout(function() {$("#myModal").modal('hide');}, 1000);
+//-   location.reload();
+//-   }
+//-   })
+//-   }

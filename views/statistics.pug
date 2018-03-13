@@ -1,0 +1,59 @@
+html
+  head
+    script(type='text/javascript', src='https://www.gstatic.com/charts/loader.js')
+    script(type='text/javascript', src='//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js')
+    script(type='text/javascript').
+    
+      // Load the Visualization API and the piechart package.
+      google.charts.load('current', {'packages':['corechart']});
+        
+      // Set a callback to run when the Google Visualization API is loaded.
+      google.charts.setOnLoadCallback(drawChart);
+        
+      function drawChart() { 
+        
+            
+        // Create our data table out of JSON data loaded from server.
+        var data1 = new google.visualization.arrayToDataTable(!{obj1});
+
+        var options1 = {'title':'STUDENT DATA STATISTICS',
+                       'width':1500,
+                       'height':600};
+
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart1 = new google.visualization.AreaChart(document.getElementById('chart_div1'));
+        chart1.draw(data1, options1);
+
+                // Create our data table out of JSON data loaded from server.
+        var data2 = new google.visualization.arrayToDataTable(!{obj2});
+
+        var options2 = {'title':'STUDENT GENDER STATISTICS',
+                       'width':1500,
+                       'height':600};
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart2 = new google.visualization.PieChart(document.getElementById('chart_div2'));
+        chart2.draw(data2, options2);
+      }
+
+    style.
+      select,input {
+        width:250px;
+        height:40px;
+        }
+
+      nav {
+        line-height: 150px;
+        height: 30px;
+        padding-top: 0;
+        }
+body
+    .container.full
+      nav.navbar.navbar-fixed-top.navbar-expand-md.navbar-dark.bg-primary
+        .w-full.block(class='lg:flex lg:items-center')
+          .text-md
+            a.block.text-grey-lightest.mr-4(href='/statistics', class='lg:inline-block hover:text-white')
+              | Statistic
+      #chart_div1.mt-4.items-center
+      #chart_div2.mt-4.items-center
