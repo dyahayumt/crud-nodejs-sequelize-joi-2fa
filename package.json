@@ -6,20 +6,31 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
-    "body-parser": "~1.18.2",
+    "body-parser": "^1.18.2",
     "chart.js": "^2.7.2",
+    "connect-flash": "^0.1.1",
     "cookie-parser": "~1.4.3",
+    "crypto": "^1.0.1",
     "debug": "~2.6.9",
     "express": "~4.15.5",
+    "express-session": "^1.15.6",
     "express-validation": "^1.0.2",
+    "memory": "0.0.3",
     "morgan": "~1.9.0",
     "mysql": "github:mysqljs/mysql",
     "npm": "^5.7.1",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
     "pug": "2.0.0-beta11",
-    "serve-favicon": "~2.4.5"
+    "serve-favicon": "~2.4.5",
+    "session": "^0.1.0",
+    "session-memory-store": "^0.2.2",
+    "store": "^2.0.12"
   },
   "main": "app.js",
-  "devDependencies": {},
+  "devDependencies": {
+    "jest": "^22.4.2"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dyahayumt/student-information-system.git"

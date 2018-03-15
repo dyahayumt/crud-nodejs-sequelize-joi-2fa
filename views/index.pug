@@ -9,15 +9,17 @@ html
     script(src='https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js')
 
   body
-  html
-  body
   nav.navbar.navbar-expand-sm.pull-sm-left(style='\
-left: 150px;\
+margin-left: 150px;\
 ')  
-    form(action='/statistics', method='GET')
-                  input.btn.btn-secondary(type='submit' value='Get Students Gender Statistics')             
+    form(action='/login', method='GET')
+                  input.btn.btn-secondary(type='submit' value='Log in')
+    form(action='/logout', method='GET')
+                  input.btn.btn-secondary(type='submit' value='Log Out')              
     form(action='/input', method='GET')
                   input.btn.btn-secondary(type='submit' value='Input New Student')
+    form(action='/statistics', method='GET')
+                  input.btn.btn-secondary(type='submit' value='Get Students Gender Statistics')             
     form(action='/search', method='POST')
       .container-full
         .row.searchFilter
@@ -45,19 +47,19 @@ left: 150px;\
                   span.caret          
                 .dropdown-menu.dropdown-menu-right
                   ul.category_filters
-                    li
-                      input#sortBy(type="radio" name="sortBy" value="ASC")
-                      label.category-label(for="sortBy") ASC
                     li 
                       input#sortBy(type="radio" name="sortBy" value="DESC")
                       label.category-label(for="sortBy") DESC
+                    li
+                      input#sortBy(type="radio" name="sortBy" value="ASC")
+                      label.category-label(for="sortBy") ASC
                 button#search.Btn.btn.btn-secondary.btn-searcha.a(type="submit" href='/search/')
                   span.glyphicon.glyphicon-search  
                   span.label-icon Search
   .container-full
     h1.text-center Student List
     table.table
-      thead.thead-light
+      thead.thead-dark
          tr
           th= 'ID'
           th= 'First Name'
@@ -74,7 +76,7 @@ left: 150px;\
         tr
           td= student.student_id
           td
-              a.student.first_name(href='/student/'+student.student_id) #{student.first_name}
+              a.student.first_name(href='/students/'+student.student_id) #{student.first_name}
           td= student.middle_name
           td= student.last_name
           td= student.gender
@@ -86,41 +88,6 @@ left: 150px;\
           td
            form.form-inline(action='/delete/'+student.student_id, method="POST" )
                     button.btn.btn-info(type="submit", role='button', onclick="return confirm('are you sure want to delete ?')") Delete
-        p.table-center #{notif}
-//-             form.form-inline(action='/delete/'+student.id_student, method="POST" )
-//-             a(href='/students/'+student.student_id)
-//-               botton.btn.btn-success(type='botton')
-//-                 i.fa.fa-pencil
-//-             a(href='#')
-//-               botton.btn.btn-danger(type='botton', onclick='delete('+student.student_id+')')
-//-                 i.fa.fa-trash
-//- //Modal
-//- #myModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
-//-   .modal-dialog(role='document')
-//-     .modal-content
-//-       .modal-header
-//-         h5#exampleModalLabel.modal-title Warning
-//-         botton.close(type='botton', data-dismiss='modal', arial-label='Close')
-//-           span(aria-hidden='true') x 
-//-       .modal-body
-//-         | Are you sure to delete this information details?
-//-       .modal-footer
-//-         botton.btn.btn-danger(type='botton', onclick='deleteProcess()') Yes
-//-         botton.btn.btn-secondary(type='botton', data-dismiss='modal') No
+        p.table-center #{notif} 
 
-//- script(type='text/javascript').
-//-   function detete (e) {
-//-   window.idStudent = e;
-//-   $("#myModal").modal('show');
-//-   }        
-//-   function deteleProcess(){
-//-   var id = windows.idStudent;
-//-   $.ajax({
-//-   url: '/students/delete'+id,
-//-   type:'GET',
-//-   success : function (respon) {
-//-   setTimeout(function() {$("#myModal").modal('hide');}, 1000);
-//-   location.reload();
-//-   }
-//-   })
-//-   }
+        

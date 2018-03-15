@@ -1,0 +1,33 @@
+html
+  head
+    title= 'Web Student'
+    link(href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css', rel='stylesheet')
+    script(src='https://code.jquery.com/jquery-3.2.1.slim.min.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js')
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js')
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js')
+
+  body
+    form(action='/', method='GET')
+    .cover-container.d-flex.h-100.p-3.mx-auto.flex-column
+      main.inner.cover(role="main" style="\
+    position: absolute;\
+    margin-top: 200px;\
+    margin-left: 250px;\
+")
+        h1.cover-heading.text-center STUDENT INFORMATION SYSTEM
+        p.lead.text-center
+          | Only applicants and students can login using this page. Please contact administrator of this website to more information.
+        p.lead
+          nav.navbar.navbar-expand-sm.pull-sm-left(style='\
+margin-left: 200px;\
+')  
+            form(action='/login', method='GET')
+                        input.btn.btn-secondary(type='submit' value='Log in')            
+            form(action='/statistics', method='GET')
+                        input.btn.btn-secondary(type='submit' value='Get Students Gender Statistics') 
+      footer.mastfoot.mt-auto
+        .inner
+
+            

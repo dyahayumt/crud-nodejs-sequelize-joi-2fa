@@ -36,7 +36,7 @@ html
       overflow: hidden;
       }
   body
-   form(name="student_form" action="/updated-student" method="POST")
+     form(action="/updated-student" method="POST")
       .container
         header
           link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css', integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm', crossorigin='anonymous')
@@ -79,7 +79,7 @@ html
           .form-group.row
             label.col-3.col-form-label(for='dateBirth') Date of Birth
             .col-9
-              input#dateBirth.form-control(type='date', name='date_of_birth', value=date_of_birth)
+              input#dateBirth.form-control(type='date', name='date_of_birth', value=date_of_birth, min="1990-01-01", max="2006-01-01")
           .form-group.row
             label.col-3.col-form-label(for='phoneNumber') Phone Number
             .col-9

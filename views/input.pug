@@ -9,8 +9,6 @@ html
       }
       header{
       padding: 1em;
-      color: #666666;
-      background-color: #bfbfbf;
       clear: left;
       text-align: center;
       margin-bottom: 20px;
@@ -29,12 +27,18 @@ html
       nav ul a {
       text-decoration: none;
       }
-  body
     form(action='/input', method='POST') 
       .container
         header
           link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css', integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm', crossorigin='anonymous')
-          .card.text-center
+          .card.text-center(style='\
+border-left-width: 0px;\
+border-top-width: o;\
+padding-bottom: 0px;\
+border-top-width: 0px;\
+border-right-width: 0px;\
+border-bottom-width: 0px;\
+')
             h1
               | Input New Student
             h5 
@@ -43,50 +47,50 @@ html
           .form-group.row
             label.col-3.col-form-label(for='example-text-input') Student ID
             .col-9
-              input#example-text-input.form-control(type='text', name='student_id', value='')
+              input#example-text-input.form-control(type='text', name='student_id', value='' required)
           .form-group.row
             label.col-3.col-form-label(for='example-text-input') First Name
             .col-9
-              input#firstName.form-control(type='text', name='first_name', value='')
+              input#firstName.form-control(type='text', name='first_name', value='' required)
           .form-group.row
             label.col-3.col-form-label(for='middleName') Middle Name
             .col-9
-              input#middleName.form-control(type='text', name='middle_name', value='')
+              input#middleName.form-control(type='text', name='middle_name', value='' required)
           .form-group.row
             label.col-3.col-form-label(for='lastName') Last Name
             .col-9
-              input#lastName.form-control(type='text', name='last_name', value='')
+              input#lastName.form-control(type='text', name='last_name', value='' required)
           .form-group.row
             label.col-3.col-form-label(for='placeBirth') Place Of Birth
             .col-9
-              input#placeBirth.form-control(type='text', name='place_of_birth', value='')
+              input#placeBirth.form-control(type='text', name='place_of_birth', value='' required)
           .form-group.row
             label.col-2(for="Gender") Gender
               .form-radio
                 .radio
                   label
-                    input(type="radio" name="radio" value="M" checked=sgender=="M") 
+                    input(type="radio" name="radio" value="M" checked=sgender=="M" required) 
                     | Male
                 .radio
                   label
-                    input(type="radio" name="radio" value="F" checked=sgender=="F") 
+                    input(type="radio" name="radio" value="F" checked=sgender=="F" required) 
                     | Female    
           .form-group.row
             label.col-3.col-form-label(for='dateBirth') Date of Birth
             .col-9
-              input#dateBirth.form-control(type='date', name='date_of_birth', value='')
+              input#dateBirth.form-control(type='date', name='date_of_birth', value='' required min="1990-01-01", max="2009-01-01")
           .form-group.row
             label.col-3.col-form-label(for='phoneNumber') Phone Number
             .col-9
-              input#phoneNumber.form-control(type='text', name='phone_number', value='')
+              input#phoneNumber.form-control(type='text', name='phone_number', value='' required)
           .form-group.row
             label.col-3.col-form-label(for='email') Email Address
             .col-9
-              input#email.form-control(type='text', name='email_address', value='')
+              input#email.form-control(type='text', name='email_address', value='' required)
           .form-group.row
             label.col-3.col-form-label(for='dateTime') Date Time
             .col-9
-              input#email.form-control(type='date', name='date_time', value='')
+              input#email.form-control(type='date', name='date_time', value='' required)
         input.btn.btn-secondary(type='submit', value='Submit')
         script(src='https://code.jquery.com/jquery-3.2.1.slim.min.js', integrity='sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN', crossorigin='anonymous')
         script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js', integrity='sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q', crossorigin='anonymous')

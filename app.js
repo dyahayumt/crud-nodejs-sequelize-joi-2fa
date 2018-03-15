@@ -10,6 +10,15 @@ var users = require('./routes/users');
 
 var app = express();
 
+var flash             = require('connect-flash');
+var crypto            = require('crypto');
+var passport          = require('passport');
+var passportLocal     = require('passport-local').Strategy;
+var session           = require('express-session');
+var Store             = require('express-session').Store;
+var BetterMemoryStore = require('session-memory-store')(session);
+
+
 var mysql = require('mysql');
 
 var con = mysql.createConnection({
@@ -30,9 +39,112 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(flash());
 
-app.use('/', index);
-app.use('/users', users);
+app.use(session({
+  name: 'JSESSION',
+  secret: 'MYSECRETISVERYSECRET',
+  store:  store,
+  resave: true,
+  saveUninitialized: true
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+//app.use('/', index);
+//app.use('/users', users);
+
+var store = new BetterMemoryStore({ expires: 60 * 60 * 1000, debug: true });
+
+passport.use('local', new passportLocal ({
+  usernameField: 'user_name',
+  passwordField: 'password',
+  passReqToCallback: true //passback entire req to call back
+} , function (req, user_name, password, done){
+      console.log(user_name+'=',password, done)
+      if(!user_name || !password ) { return done(null, false, req.flash('message','All fields are required.')); }
+      var salt = '7fa73b47df808d36c5fe328546ddef8b9011b2c6';
+      con.query("select * from user where user_name = ?", [user_name], function(err, rows){
+          console.log(err); 
+          console.log(rows);
+        if (err) return done(req.flash('message',err));
+
+        if(!rows.length){ return done(null, false, req.flash('message','Invalid username or password.')); }
+        salt = salt+''+password;
+        var encPassword = crypto.createHash('sha1').update(salt).digest('hex');
+        var dbPassword  = rows[0].password;
+        if(!(dbPassword == encPassword)){
+            return done(null, false, req.flash('message','Invalid username or password.'));
+         }
+
+        return done(null, rows[0]);
+      });
+    }
+));
+
+passport.serializeUser(function(student, done){
+  done(null, student.student_id);
+});
+passport.deserializeUser(function(student_id, done){
+  con.query("select * from user where student_id = ?", [student_id], function (err, user){
+      if (err) return done(err);
+      done(null, user);
+  });
+
+});
+
+function isAuthenticated(req, res, next) {
+  if (req.isAuthenticated())
+    return next();
+  res.redirect('/login');
+}
+
+// app.get('/students', isAuthenticated, function(req, res) {
+//   res.render('index');
+// });
+
+app.get('/logout',
+  function(req, res){
+    req.logout();
+    res.redirect('/login');
+});
+
+app.get('/login', function(req, res){
+  res.render('login',{'message' :req.flash('message')});
+});
+
+// app.get('/', isAuthenticated, function(req, res) {
+//   res.send('welcome');
+// });
+
+// app.get('/students', isAuthenticated, function(req, res) {
+//   res.render('index');
+// });
+
+app.get('/', function(req, res) {
+  res.render('home');
+});
+
+app.post("/login", passport.authenticate('local', {
+  successRedirect: '/students',
+  failureRedirect: '/login',
+  failureFlash: true
+}), function(req, res, info){
+  res.render('login',{'message' :req.flash('message')});
+});
+
+
+function formatDateTime(date, type) {
+  var d = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
+
+  if (month.length < 2) month = '0' + month;
+  if (day.length < 2) day = '0' + day;
+
+  return [day, month, year].join('/');
+}
 
 function formatDate(date, type) {
   var d = new Date(date),
@@ -43,12 +155,8 @@ function formatDate(date, type) {
   if (month.length < 2) month = '0' + month;
   if (day.length < 2) day = '0' + day;
 
-  if (type === 'mysql') {
-    return [year, month, day].join('-');
-  } else {
-    return [day, month, year].join('-');
+  return [day, month, year].join('-');
   } 
-}
 
 function getStudentGender(rows, studentGender){
   if(studentGender === 'M'){
@@ -66,7 +174,7 @@ function getStudentGender(rows, studentGender){
 /// To get collection of person saved in MySQL database.
 ///
 
-app.get('/students', function(req, res) {
+app.get('/students', isAuthenticated, function(req, res) {
   var studentList = [];
 
   // Do the query to get data.
@@ -89,10 +197,10 @@ app.get('/students', function(req, res) {
           'last_name':rows[i].last_name,
           'gender': rows[i].gender,
           'place_of_birth':rows[i].place_of_birth,
-          'date_of_birth':dateOfBirth,
+          'date_of_birth':formatDateTime(rows[i].date_of_birth),
           'phone_number': rows[i].phone_number,
           'email_address': rows[i].email_address,
-          'date_time': dateTime,
+          'date_time': formatDateTime(rows[i].date_time)
         }
         // Add object into array
         studentList.push(student);
@@ -103,12 +211,27 @@ app.get('/students', function(req, res) {
   })
 });
 
+
 app.get('/input', function (req, res) {
     res.render('input');
 });
+
+function dobval (){
+  var date_of_birth = req.body.date_of_birth;
+  var today = formatDate( new Date ());
+
+  if (date_of_birth >= today){
+    console.log("Data is invalid");
+    return false;
+  } else {
+    return true;
+  }
+}
+
  //write student details
 app.post('/input', function (req, res) {
   // this is where you handle the POST request.
+  //if (dobval == true)
   var createStudent = {
    student_id: req.body.student_id,
    first_name: req.body.first_name,
@@ -125,41 +248,60 @@ app.post('/input', function (req, res) {
 
   con.query('INSERT INTO student SET ?', createStudent, function (error, results, fields) {
     if (error) throw error;
+    console.log("1 record inserted");
 		res.redirect('/students');
   });
-});
+})
 
-app.get('/student/:id', function(req, res){
+app.get('/students/:id', function(req, res){
 	con.query('SELECT * FROM student WHERE student_id = ?', [req.params.id], function(err, rows, fields) {
 		if(err) throw err
+    else console.log(rows);
 		
 		// if user not found
 		if (rows.length <= 0) {
+				// req.flash('error', 'Student not found with id = ' + req.params.id)
 				res.redirect('/students')
-		} else { 
-      var studentDoB = formatDate(rows[0].date_of_birth, 'mysql');
-      var dateTime = formatDate(rows[0].date_time);
-      console.log(studentDoB);
-
-			// if user found
-			// render to views/index.pug template file
-			res.render('edit', {
-				title: 'Edit Student', 
-        student_id: rows[0].student_id,
-				first_name: rows[0].first_name,
-				middle_name: rows[0].middle_name,
-        last_name: rows[0].last_name,
-        gender: rows[0].gender,
-				place_of_birth: rows[0].place_of_birth,
-        date_of_birth: studentDoB,
-        phone_number: rows[0].phone_number,
-        email_address: rows[0].email_address,
-        date_time: dateTime,
-        sOldId: rows[0].student_id
-			})
+		}
+		else { // if user found
+				// render to views/index.pug template file
+				res.render('edit', {
+            title: 'Edit Student', 
+            student_id: rows[0].student_id,
+				    first_name: rows[0].first_name,
+				    middle_name: rows[0].middle_name,
+            last_name: rows[0].last_name,
+            gender: rows[0].gender,
+				    place_of_birth: rows[0].place_of_birth,
+            date_of_birth: formatDateTime(rows[0].date_of_birth),
+            phone_number: rows[0].phone_number,
+            email_address: rows[0].email_address,
+            date_time: formatDateTime(rows[0].date_time),
+            sOldId: rows[0].student_id
+        })
 		}            
 	});
 });
+
+// 			// if user found
+// 			// render to views/index.pug template file
+// 			res.render('edit', {
+// 				title: 'Edit Student', 
+//         student_id: rows[0].student_id,
+// 				first_name: rows[0].first_name,
+// 				middle_name: rows[0].middle_name,
+//         last_name: rows[0].last_name,
+//         gender: rows[0].gender,
+// 				place_of_birth: rows[0].place_of_birth,
+//         date_of_birth: formatDate(rows[0].date_of_birth),
+//         phone_number: rows[0].phone_number,
+//         email_address: rows[0].email_address,
+//         date_time: dateTime,
+//         sOldId: rows[0].student_id
+// 			})
+// 		}            
+// 	});
+// });
 
 ///
 /// HTTP Method	: POST
@@ -204,8 +346,6 @@ app.post('/delete/:id', function (req, res) {
     });
   });
 
-
-
   function transpose(original) {
     var copy = [];
     for (var i = 0; i < original.length; ++i) {
@@ -230,13 +370,31 @@ app.post('/delete/:id', function (req, res) {
           getMonth.push('mount')
           getFreq.push('freq')
           for (var j = 0 ; j < rows.length ; j++) {
-            if (rows[j].month === 1) {
-              getMonth.push('January')
-            } else if (rows[j].month === 2) {
-              getMonth.push('February')
-            } else {
-              getMonth.push('March')
-            }       
+          if (rows[j].month === 1) {
+            getMonth.push ('JANUARY')  
+          } else if (rows[j].month === 2 ) {
+            getMonth.push ('FEBRUARY')
+          } else if (rows[j].month === 3 ) {
+            getMonth.push ('MARCH')
+          } else if (rows[j].month === 4 ) { 
+            getMonth.push ('APRIL')  
+          } else if (rows[j].month === 5 ) {
+            getMonth.push ('MAY') 
+          } else if (rows[j].month === 6 ) { 
+            getMonth.push (JUNE)    
+          } else if (rows[j].month === 7 ) {  
+            getMonth.push ('JULY')  
+          } else if (rows[j].month === 8 ) {   
+            getMonth.push ('AUGUST')
+          } else if (rows[j].month === 9 ) {   
+            getMonth.push ('SEPTEMBER') 
+          } else if (rows[j].month === 10 ) {    
+            getMonth.push ('OCTOBER') 
+          } else if (rows[j].month === 11 ) {    
+            getMonth.push ('NOVEMBER') 
+          } else if (rows[j].month === 12 ) {    
+            getMonth.push ('DECEMBER')   
+          }     
             getFreq.push(rows[j].freq)       
           }
           temp_MonthFreq.push(getMonth,getFreq)
@@ -292,8 +450,8 @@ app.post('/search', function(req, res) {
    // console.log(sql, function(err, rows, fields){
       // Loop check on each row
       for (var i = 0; i < rows.length; i++) {
-        var dateOfBirth = formatDate(rows[i].date_of_birth);
-        var dateTime = formatDate(rows[i].date_time);
+        // var dateOfBirth = formatDate(rows[i].date_of_birth);
+        // var dateTime = formatDate(rows[i].date_time);
 
         // Create an object to save current row's data
         var student = {
@@ -303,10 +461,10 @@ app.post('/search', function(req, res) {
           'last_name':rows[i].last_name,
           'gender': rows[i].gender,
           'place_of_birth':rows[i].place_of_birth,
-          'date_of_birth':dateOfBirth,
+          'date_of_birth':formatDateTime(rows[i].date_of_birth),
           'phone_number': rows[i].phone_number,
           'email_address': rows[i].email_address,
-          'date_time': dateTime
+          'date_time': formatDateTime(rows[i].date_time)
         }
        // Add object into array
         studentFilter.push(student);
