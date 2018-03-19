@@ -34,7 +34,6 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 // uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -52,8 +51,6 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
-//app.use('/', index);
-//app.use('/users', users);
 
 var store = new BetterMemoryStore({ expires: 60 * 60 * 1000, debug: true });
 
@@ -61,22 +58,20 @@ passport.use('local', new passportLocal ({
   usernameField: 'user_name',
   passwordField: 'password',
   passReqToCallback: true //passback entire req to call back
-} , function (req, user_name, password, done){
+} , function (req, user_name, password, done) {
       if(!user_name || !password ) { 
         return done(null, false, req.flash('message','All fields are required.')); 
       }
-      //var salt = '7fa73b47df808d36c5fe328546ddef8b9011b2c6';
       con.query("select * from users where user_name = ?", [user_name], function(err, rows){
           console.log(err); 
           console.log(rows);
         if (err) return done(req.flash('message',err));
-        if(!rows.length){ 
+        if(!rows.length) { 
           return done(null, false, req.flash('message','Invalid username or password.')); 
         }
-        //salt = salt+''+password;
         var encPassword = crypto.createHash('sha1').update(password).digest('hex');
         var dbPassword  = rows[0].password;
-        if(!(dbPassword == encPassword)){
+        if(!(dbPassword == encPassword)) {
             return done(null, false, req.flash('message','Invalid username or password.'));
          }
 
@@ -85,10 +80,10 @@ passport.use('local', new passportLocal ({
     }
 ));
 
-passport.serializeUser(function(student, done){
+passport.serializeUser(function(student, done) {
   done(null, student.student_id);
 });
-passport.deserializeUser(function(student_id, done){
+passport.deserializeUser(function(student_id, done) {
   con.query("select * from users where student_id = ?", [student_id], function (err, user){
       if (err) return done(err);
       done(null, user);
@@ -102,17 +97,13 @@ function isAuthenticated(req, res, next) {
   res.redirect('/login');
 }
 
-// app.get('/students', isAuthenticated, function(req, res) {
-//   res.render('index');
-// });
-
 app.get('/logout',
   function(req, res){
     req.logout();
     res.redirect('/');
 });
 
-app.get('/login', function(req, res){
+app.get('/login', function(req, res) {
   res.render('login',{'message' :req.flash('message')});
 });
 
@@ -205,20 +196,6 @@ app.post('/reset-password/:token', function(req, res) {
         });
       });
     },
-  //   function(rows, done) {
-  //     const sgMail = require('@sendgrid/mail');
-  //     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-  //     const msg = {
-  //       to: [req.body.email_address],
-  //       from: 'reset-pass@example.org',
-  //       subject: 'Password',
-  //       text: 'Your password has been changed',
-  //     };
-  //     sgMail.send(msg, function(err) {
-  //       req.flash('info', 'Sucess');
-  //       done(err, 'done');
-  //     });
-  // }
 ], 
     function (err) {
     res.redirect('/');
@@ -258,7 +235,6 @@ app.post("/login", passport.authenticate('local', {
 }), function(req, res, info){
   res.render('login',{'message' :req.flash('message')});
 });
-
 
 function formatDateTime(date, type) {
   var d = new Date(date),
@@ -379,7 +355,7 @@ app.post('/input', function (req, res) {
   });
 })
 
-app.get('/students/:id', function(req, res){
+app.get('/students/:id', function(req, res) {
 	con.query('SELECT * FROM student WHERE student_id = ?', [req.params.id], function(err, rows, fields) {
 		if(err) throw err
     else console.log(rows);
@@ -509,15 +485,6 @@ app.post('/search', function(req, res) {
   var mysqlquery;
   var sort= req.body.sort;
 
-  // if (search = null){
-  //   mysqlquery = "SELECT * FROM student WHERE "+opt+" order by "+opt+" DESC";
-  // } else {
-  //   mysqlquery = "SELECT * FROM student WHERE "+opt+" LIKE '%"+keyword+"%' ORDER BY "+opt+" "+sort;
-  // } 
-
-  // var sql = "SELECT * FORM student where "+opt+" like '%" + keyword + "%' order by "+opt+" "+order+"";
-  // console.log(mysql, function(err, rows, fields){
-  // Do the query to get data.
   con.query('SELECT * FROM student WHERE '+opt+' LIKE  \'%' + keyword +'%\' ORDER BY '+opt+' '+sortBy+'', function(err, rows, fields) {
     if (err) {
       res.status(500).json({"status_code": 500,"status_message": "internal server error"});
@@ -526,10 +493,6 @@ app.post('/search', function(req, res) {
    // console.log(sql, function(err, rows, fields){
       // Loop check on each row
       for (var i = 0; i < rows.length; i++) {
-        // var dateOfBirth = formatDate(rows[i].date_of_birth);
-        // var dateTime = formatDate(rows[i].date_time);
-
-        // Create an object to save current row's data
         var student = {
           'student_id':rows[i].student_id,
           'first_name':rows[i].first_name,

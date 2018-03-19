@@ -1,17 +1,26 @@
-# Student Web System Information 
+# Student Web System Information
 
-### This is a simple CRUD of Students Web Server-Client. There is student_info.sql which used as backup of database. With using : Javascript, mysql, bootstrap, and Google Chart
+### This is a simple CRUD of Students Web Server-Client. There is student_info.sql which used as backup of database. With using : Javascript, mysql, bootstrap, $
 
 ### How to run:
-1. Clone this project
-2. Import student_info.sql
-3. Run using npm
-```
-npm start
-```
-4. Access with using this address
-```
-http://localhost:3000/students 
-```
+1. Clone this project 
+2. Import student_info.sql 
+3. Type this command in terminal 
 
-5. Username : Dyah, Password: 12345678
+```
+echo "export SENDGRID_API_KEY='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'"
+ > sendgrid.env
+
+echo "sendgrid.env" >> .gitignore
+
+source ./sendgrid.env
+```
+4.  Run using npm 
+``` npm start ``` 
+5. Access with using this address 
+``` http://localhost:3000/students ```
+ 
+6. Username : Dyah, Password: login
+
+
+

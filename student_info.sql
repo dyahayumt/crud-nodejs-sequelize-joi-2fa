@@ -176,8 +176,60 @@ CREATE TABLE `student` (
 
 LOCK TABLES `student` WRITE;
 /*!40000 ALTER TABLE `student` DISABLE KEYS */;
-INSERT INTO `student` VALUES ('1.1.1','Sisca','Kusuma','Putri','F','Wonogiri','1996-12-02','082137383728','siska@gmail.com','2018-01-12'),('1.1.2','Putra','Sugianto','Brilian','M','Semarang','1996-12-09','081687880997','putra@gmail.com','2018-02-01'),('1.1.3','Mahendra','Jaya','Arga','M','Solo','1997-12-09','082828282893','arga@gmail.com','2018-02-01'),('1.1.4','Dyah','Firmanda','Ananda','F','Wonogiri','1994-08-19','081238363829','dyah@gmail.com','2018-03-12'),('1.1.5','Soraya','Parmita','Fauziana','F','Semarang','1993-12-19','082372837462','soraya@gmail.com','2018-02-12'),('1.1.6','Azma','Hendrawan','Putri','F','Kudus','1995-08-12','081237828123','azma@gmail.com','2018-03-12'),('1.1.7','Keisha','Putri','Kirana','F','Wonogiri','1993-03-12','081391029123','keisha@gmail.com','2018-03-12'),('1.1.8','Mila','Lita','Fio','F','Semarang','1994-06-12','mila@gmail.com','mila@gmail.com','2018-01-12'),('1.1.9','Diana','Wardana','Kusuma','F','Semarang','1996-12-21','081213781888','kusuma@gmail.com','2018-01-12'),('1.2.1','Firman','Putra','Syah','M','Malang','2018-04-24','081218992327','firman@gmail.com','2018-03-12'),('1.2.2','Retna','Kumbara','Putra','F','Solo','1999-08-12','081928128128','kumara@gmail.com','2018-02-12');
+INSERT INTO `student` VALUES ('1.1.1','Sisca','Kusuma','Putri','F','Wonogiri','1990-12-12','082137383728','siska@gmail.com','2018-12-12'),('1.1.2','Putra','Sugianto','Brilian','F','Semarang','1992-01-11','081687880997','putra@gmail.com','2018-12-12'),('1.1.3','Mahendra','Jaya','Arga','M','Solo','1997-12-09','082828282893','arga@gmail.com','2018-02-01'),('1.1.4','Dyah','Firmanda','Ananda','F','Wonogiri','1994-08-19','081238363829','dyah@gmail.com','2018-03-12'),('1.1.5','Soraya','Parmita','Fauziana','F','Semarang','1999-12-12','082372837462','soraya@gmail.com','2018-01-12'),('1.1.6','Azma','Hendrawan','Putri','F','Kudus','1995-08-12','081237828123','azma@gmail.com','2018-03-12'),('1.1.7','Keisha','Putri','Kirana','F','Wonogiri','1993-03-12','081391029123','keisha@gmail.com','2018-03-12'),('1.1.8','Mila','Lita','Fio','F','Semarang','1994-06-12','mila@gmail.com','mila@gmail.com','2018-01-12'),('1.1.9','Diana','Wardana','Kusuma','F','Semarang','1996-12-21','081213781888','kusuma@gmail.com','2018-01-12'),('1.2.1','Firman','Putra','Syah','M','Malang','2018-04-24','081218992327','firman@gmail.com','2018-03-12'),('1.2.2','Retna','Kumbara','Putra','F','Solo','1999-08-12','081928128128','kumara@gmail.com','2018-02-12'),('1.2.3','Robi','Maulana','Fikri','M','Kudus','1998-12-12','081292293123','robi@gmail.com','2018-08-12'),('1.2.4','Rendi','Saputra','Aji','M','Pemalang','1997-05-12','081281912123','rendi@gmail.com','2018-05-12'),('1.2.5','Roy','Maulana','Putra','M','Pekalongan','1999-11-11','081278891281','roy@gmail.com','2018-12-12'),('1.2.6','Dinda','Ramandani','Kirana','M','Jakarta','1999-02-12','081219199121','dinda@kirana.com','2018-02-12'),('1.2.7','Anugrah','Winanda','Ageng','F','Semarang','1999-02-12','087343676213','ageng@gmail.com','2017-12-12'),('1.2.8','Nanda','Tyas','Ananda','F','Semarang','1997-12-12','083179392012','nanda@gmail.com','2017-12-12'),('2.1.4','Mina','Rahma','Anisa','F','Jogja','1997-09-12','081213781888','rahma@gmail.com','2017-12-12'),('3.2.1','Firnama','Gusna','Maya','F','Solo','1998-12-12','081921392121','gusna@gmail.com','2017-11-12');
 /*!40000 ALTER TABLE `student` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user`
+--
+
+DROP TABLE IF EXISTS `user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user` (
+  `student_id` varchar(20) DEFAULT NULL,
+  `user_name` varchar(20) DEFAULT NULL,
+  `password` varchar(60) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user`
+--
+
+LOCK TABLES `user` WRITE;
+/*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES ('1.1.1','Sisca','674f35492860c10e548c32312eb01451b6d04d9f'),('1.1.2','Dyah','1caf85936167fd1471aa94061ffc0f13e3ec57df'),('1.1.2','Putra','1caf85936167fd1471aa94061ffc0f13e3ec57df'),('1.1.3','Mahendra','959af51cfd4f359dea78b9e70c752711a3e7a8bf'),('1.1.4','Dyah','6a57a942de5abe3850232af8bff17b169276a11d'),('1.1.5','Soraya','d01be2bcd29603caab716aab49cded226b0434cd'),('1.1.6','Soraya','d65294645c6b930611a0352d225f580cf1beb788'),('1.1.7','Keisha','11bddbc6ffd3e0bce444c7c71e0e586a9581d6a8'),('1.1.8','Mila','a80ea402fba300f91eb2ea607cddf83be28acb37'),('1.1.9','Mila','336c9c3b9eca3193747aa4a08dde82ce4111e94d'),('1.2.1','Mila','3e200b8330b0d2f43dcf11904064007554b25d0c'),('1.2.2','Retna','643409f764411a01ad800677f94411376c919895'),('1.2.3','Robi','97898022dc329b42726b0d7255ddcdf526123daf'),('1.2.4','Robi','e3f175839193c7905bae7024eaf2dbf59737ef90'),('1.2.4','Rendi','e3f175839193c7905bae7024eaf2dbf59737ef90'),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL);
+/*!40000 ALTER TABLE `user` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `users`
+--
+
+DROP TABLE IF EXISTS `users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `users` (
+  `student_id` varchar(15) NOT NULL,
+  `email_address` varchar(50) DEFAULT NULL,
+  `user_name` varchar(40) DEFAULT NULL,
+  `password` varchar(60) DEFAULT NULL,
+  `token_pass` varchar(200) DEFAULT NULL,
+  `token_exp` date DEFAULT NULL,
+  PRIMARY KEY (`student_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `users`
+--
+
+LOCK TABLES `users` WRITE;
+/*!40000 ALTER TABLE `users` DISABLE KEYS */;
+INSERT INTO `users` VALUES ('1.1.1','siska@gmail.com','Sisca','2736fab291f04e69b62d490c3c09361f5b82461a',NULL,NULL),('2.1.2','rullyindraa@gmail.com','Rully','2736fab291f04e69b62d490c3c09361f5b82461a',NULL,NULL),('3.1.5','dyah@gmail.com','Dyah','2736fab291f04e69b62d490c3c09361f5b82461a',NULL,NULL),('3.1.6','dyahtika@gmail.com','Dyahtika','2736fab291f04e69b62d490c3c09361f5b82461a',NULL,NULL),('3.1.7','dyahayumt@gmail.com','Ayu','2736fab291f04e69b62d490c3c09361f5b82461a',NULL,NULL),('4.1.5','annarahman1916@gmail.com','Anna','2736fab291f04e69b62d490c3c09361f5b82461a',NULL,NULL);
+/*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -243,4 +295,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-03-13 12:46:24
+-- Dump completed on 2018-03-19 22:57:14
