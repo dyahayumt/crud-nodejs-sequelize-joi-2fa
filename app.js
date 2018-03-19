@@ -410,37 +410,31 @@ app.get('/students/:id', function(req, res){
 });
 
 app.post('/updated-student', function(req, res) {
-	var student_id = req.body.student_id;
-	var first_name = req.body.first_name;
-	var middle_name = req.body.middle_name;
+  var student_id = req.body.student_id;
+  var first_name = req.body.first_name;
+  var middle_name = req.body.middle_name;
   var last_name = req.body.last_name;
   var gender= req.body.radio;
-	var place_of_birth = req.body.place_of_birth;
+  var place_of_birth = req.body.place_of_birth;
   var date_of_birth = req.body.date_of_birth;
   var phone_number = req.body.phone_number;
   var email_address = req.body.email_address;
   var date_time = req.body.date_time;
   var studentOldId = req.body.oldId;
-	console.log(student_id+' '+first_name+' '+middle_name+' '+last_name+' '+gender+' '+place_of_birth+' '+date_of_birth+' '+phone_number+' '+email_address +' '+date_time+' '+studentOldId);
+  console.log(student_id+' '+first_name+' '+middle_name+' '+last_name+' '+gender+' '+place_of_birth+' '+date_of_birth+' '+phone_number+' '+email_address +' '+date_time+' '+studentOldId);
+  var postData  = {student_id: student_id, first_name: first_name, middle_name: middle_name, last_name: last_name, gender: gender, date_of_birth: date_of_birth, phone_number: phone_number, date_time:date_time, email_address: email_address};
 
-	var postData  = {student_id: student_id, first_name: first_name, middle_name: middle_name, last_name: last_name, gender: gender, date_of_birth: date_of_birth, phone_number: phone_number, date_time:date_time, email_address: email_address};
-
-  
-	if(studentOldId !== undefined && studentOldId !== '') {
-    con.query('UPDATE student SET student_WHERE id_student = ?', student_id, function(err, rows, fields) {
-    //, first_name = ?, middle_name = ?, last_name = ?, gender = ? ,place_of_birth = ?, date_of_birth = ?, phone_number = ?, email_address = ?, date_time = ? WHERE student_id = ?', [student_id, first_name, middle_name, last_name, gender, place_of_birth, date_of_birth, phone_number, email_address, date_time, studentOldId], function (error, results, fields) {
-      if (error) throw error;
-      if (rows[0].length > 0 ) {
-        alert ('Your ID duplicated !');
-      }
-			res.redirect('/students');
-		});
-	} else {
-		con.query('INSERT INTO student SET ?', postData, function (error, results, fields) {
-			if (error) throw error;
-			res.redirect('/students');
-		});
-	}
+  if(studentOldId !== undefined && studentOldId !== '') {
+      con.query('UPDATE student SET student_id = ?, first_name = ?, middle_name = ?, last_name = ?, gender = ? ,place_of_birth = ?, date_of_birth = ?, phone_number = ?, email_address = ?, date_time = ? WHERE student_id = ?', [student_id, first_name, middle_name, last_name, gender, place_of_birth, date_of_birth, phone_number, email_address, date_time, studentOldId], function (error, results, fields) {
+          if (error) throw error;
+          res.redirect('/students');
+      });
+  } else {
+      con.query('INSERT INTO student SET ?', postData, function (error, results, fields) {
+          if (error) throw error;
+          res.redirect('/students');
+      });
+  }
 });
 
 app.post('/delete/:id', function (req, res) { 
