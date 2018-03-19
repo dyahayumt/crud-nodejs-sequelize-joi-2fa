@@ -1,0 +1,38 @@
+html
+  head
+      meta(charset='”utf-8″')
+      meta(name='”viewport”', content='”width=device-width,', initial-scale='1,', shrink-to-fit='no”')
+      link#bootstrap-css(href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css', rel='stylesheet')
+      script(src='//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js')
+      script(src='//code.jquery.com/jquery-1.11.1.min.js')
+      // ---- Include the above in your HEAD tag --------
+      form.form-horizontal(action="/user" method="POST")
+        fieldset
+          // Form Name
+          legend CREATE NEW USER
+          // Text inputs
+          .form-group
+            label.col-md-4.control-label(for='student_id') STUDENT ID
+            .col-md-4
+              input#student_id.form-control.input-md(name='student_id', type='text', placeholder='Example: 1.1.1', required='')
+          // Text input
+          .form-group
+            label.col-md-4.control-label(for='email_address') EMAIL ADDRESS
+            .col-md-4
+              input#email_address.form-control.input-md(name='email_address', type='email', placeholder='Example: dyah@gmail.com', required='')    
+          // Text input
+          .form-group
+            label.col-md-4.control-label(for='user_name') USER NAME
+            .col-md-4
+              input#user_name.form-control.input-md(name='user_name', type='text', placeholder='Example: Dyah', required='')
+          // Text input
+          .form-group
+            label.col-md-4.control-label(for='password') Password
+            .col-md-4
+              input#password.form-control.input-md(name='password', type='text', placeholder='Create Password', required='')
+          // Button (Double)
+          .form-group
+            label.col-md-4.control-label(for='button1id' type='submit')
+            .col-md-8
+              button#button1id.btn.btn-success.a(href='/') CREATE
+              button#button2id.btn.btn-danger.a CANCEL

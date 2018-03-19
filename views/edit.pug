@@ -1,6 +1,8 @@
 doctype html
 html
   head
+    meta(charset='”utf-8″')
+    meta(name='”viewport”', content='”width=device-width,', initial-scale='1,', shrink-to-fit='no”')
     style.
       div.container {
       width: 100%;
@@ -48,52 +50,52 @@ html
           .form-group.row
             label.col-3.col-form-label(for='example-text-input') Student ID
             .col-9
-              input#example-text-input.form-control(type='text', name='student_id', value=student_id)
+              input#student_id.example-text-input.form-control(type='text', name='student_id', value=student_id, required)
           .form-group.row
             label.col-3.col-form-label(for='example-text-input') First Name
             .col-9
-              input#firstName.form-control(type='text', name='first_name', value=first_name)
+              input#firstName.form-control(type='text', name='first_name', value=first_name, required)
           .form-group.row
             label.col-3.col-form-label(for='middleName') Middle Name
             .col-9
-              input#middleName.form-control(type='text', name='middle_name', value=middle_name)
+              input#middleName.form-control(type='text', name='middle_name', value=middle_name, required)
           .form-group.row
             label.col-3.col-form-label(for='lastName') Last Name
             .col-9
-              input#lastName.form-control(type='text', name='last_name', value=last_name)
+              input#lastName.form-control(type='text', name='last_name', value=last_name, required)
           .form-group.row
             label.col-2(for="Gender") Gender
               .form-radio
               .radio
                   label
-                    input(type="radio" name="radio" value="M" checked=sgender=="M") 
+                    input(type="radio" name="radio" value="M" checked=sgender=="M", required) 
                     | Male
               .radio
                   label
-                    input(type="radio" name="radio" value="F" checked=sgender=="F") 
+                    input(type="radio" name="radio" value="F" checked=sgender=="F", required) 
                     | Female        
           .form-group.row
             label.col-3.col-form-label(for='placeBirth') Place Of Birth
             .col-9
-              input#placeBirth.form-control(type='text', name='place_of_birth', value=place_of_birth)
-          .form-group.row
+              input#placeBirth.form-control(type='text', name='place_of_birth', value=place_of_birth, required)
+          .form-group.row 
             label.col-3.col-form-label(for='dateBirth') Date of Birth
             .col-9
-              input#dateBirth.form-control(type='date', name='date_of_birth', value=date_of_birth, min="1990-01-01", max="2006-01-01")
+              input#dateBirth.form-control(type='date', name='date_of_birth', value=date_of_birth, min="1990-01-01", max="2006-01-01", required)
           .form-group.row
             label.col-3.col-form-label(for='phoneNumber') Phone Number
             .col-9
-              input#phoneNumber.form-control(type='text', name='phone_number', value=phone_number)
+              input#phoneNumber.form-control(type='text' name='phone_number', value=phone_number, required)
           .form-group.row
             label.col-3.col-form-label(for='email') Email Address
             .col-9
-              input#email.form-control(type='text', name='email_address', value=email_address)
+              input#email.form-control(type='email', name='email_address', value=email_address, required)
           .form-group.row
-            label.col-3.col-form-label(for='dateTime') Date Time
+            label.col-3.col-form-label(for='dateTime') Admission Date
             .col-9
-              input#email.form-control(type='date', name='date_time', value=date_time)    
+              input#email.form-control(type='date', name='date_time', value=date_time,required)    
               input#oldId(type="hidden", name="oldId", value=sOldId)
-        input.btn.btn-secondary(type='submit', value='Submit')
+        input.btn.btn-secondary(type='submit', value='Submit' onclick='checkEmail();')
         script(src='https://code.jquery.com/jquery-3.2.1.slim.min.js', integrity='sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN', crossorigin='anonymous')
         script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js', integrity='sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q', crossorigin='anonymous')
         script(src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js', integrity='sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl', crossorigin='anonymous')

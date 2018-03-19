@@ -1,6 +1,7 @@
-doctype html
 html
   head
+    meta(charset='”utf-8″')
+    meta(name='”viewport”', content='”width=device-width,', initial-scale='1,', shrink-to-fit='no”')
     style.
       div.container {
       width: 100%;
@@ -86,12 +87,12 @@ border-bottom-width: 0px;\
           .form-group.row
             label.col-3.col-form-label(for='email') Email Address
             .col-9
-              input#email.form-control(type='text', name='email_address', value='' required)
+              input#txtEmail.form-control(type='email', name='email_address', value='' required)
           .form-group.row
-            label.col-3.col-form-label(for='dateTime') Date Time
+            label.col-3.col-form-label(for='dateTime') Admission Date
             .col-9
-              input#email.form-control(type='date', name='date_time', value='' required)
-        input.btn.btn-secondary(type='submit', value='Submit')
+              input#date.form-control(type='date', name='date_time', value='' required)
+        input.btn.btn-secondary(type='submit', value='Submit' onclick='checkEmail();')
         script(src='https://code.jquery.com/jquery-3.2.1.slim.min.js', integrity='sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN', crossorigin='anonymous')
         script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js', integrity='sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q', crossorigin='anonymous')
         script(src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js', integrity='sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl', crossorigin='anonymous')

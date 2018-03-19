@@ -13,18 +13,19 @@ html(lang='en')
 width: 530px;\
 margin-top: 120px;\
 ')
-    form(action="/login" method="POST")
+    form(method="POST")
       form.form-signin
         .text-center.mb-4
-          h1.h3.mb-3.font-weight-normal Student Login
+          h1.mb-3.font-weight-normal Reset Password
         .form-label-group
-          input#inputUser.form-control(type='text', name="user_name" placeholder='User Name', required='', autofocus='' styles='weight: 20px')
-          label(for='inputUser') User Name
+          input#password.form-control(type='password', placeholder='New Password', name="password" required='')
+          label(for='password') 
+          br
         .form-label-group
-          input#inputPassword.form-control(type='password', placeholder='Password', name="password" required='')
-          label(for='inputPassword') Password 
-        button.btn.btn-lg.btn-primary.btn-block(type='submit') Sign in
-        a(href='/forgot_password') Forgot Password
+          input#password.form-control(type='confirm', placeholder='Retype New Password', name="confirm" required='')
+          label(for='confirm') 
+          br
+        button.btn.btn-lg.btn-primary.btn-block(type='submit') Reset
       
     script(src='https://code.jquery.com/jquery-3.2.1.slim.min.js', integrity='sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN', crossorigin='anonymous')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js', integrity='sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q', crossorigin='anonymous')

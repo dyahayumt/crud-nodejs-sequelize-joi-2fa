@@ -1,19 +1,20 @@
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-
-var index = require('./routes/index');
-var users = require('./routes/users');
-
-var app = express();
-
+var express           = require('express');
+var path              = require('path');
+var favicon           = require('serve-favicon');
+var logger            = require('morgan');
+var cookieParser      = require('cookie-parser');
+var bodyParser        = require('body-parser');
+var expressValidator  = require('express-validator');
+var index             = require('./routes/index');
+var users             = require('./routes/users');
+var app               = express();
 var flash             = require('connect-flash');
 var crypto            = require('crypto');
 var passport          = require('passport');
 var passportLocal     = require('passport-local').Strategy;
+var nodemailer        = require('nodemailer');
+var async             = require('async');
+var moment            = require('moment');
 var session           = require('express-session');
 var Store             = require('express-session').Store;
 var BetterMemoryStore = require('session-memory-store')(session);
@@ -61,17 +62,19 @@ passport.use('local', new passportLocal ({
   passwordField: 'password',
   passReqToCallback: true //passback entire req to call back
 } , function (req, user_name, password, done){
-      console.log(user_name+'=',password, done)
-      if(!user_name || !password ) { return done(null, false, req.flash('message','All fields are required.')); }
-      var salt = '7fa73b47df808d36c5fe328546ddef8b9011b2c6';
-      con.query("select * from user where user_name = ?", [user_name], function(err, rows){
+      if(!user_name || !password ) { 
+        return done(null, false, req.flash('message','All fields are required.')); 
+      }
+      //var salt = '7fa73b47df808d36c5fe328546ddef8b9011b2c6';
+      con.query("select * from users where user_name = ?", [user_name], function(err, rows){
           console.log(err); 
           console.log(rows);
         if (err) return done(req.flash('message',err));
-
-        if(!rows.length){ return done(null, false, req.flash('message','Invalid username or password.')); }
-        salt = salt+''+password;
-        var encPassword = crypto.createHash('sha1').update(salt).digest('hex');
+        if(!rows.length){ 
+          return done(null, false, req.flash('message','Invalid username or password.')); 
+        }
+        //salt = salt+''+password;
+        var encPassword = crypto.createHash('sha1').update(password).digest('hex');
         var dbPassword  = rows[0].password;
         if(!(dbPassword == encPassword)){
             return done(null, false, req.flash('message','Invalid username or password.'));
@@ -86,7 +89,7 @@ passport.serializeUser(function(student, done){
   done(null, student.student_id);
 });
 passport.deserializeUser(function(student_id, done){
-  con.query("select * from user where student_id = ?", [student_id], function (err, user){
+  con.query("select * from users where student_id = ?", [student_id], function (err, user){
       if (err) return done(err);
       done(null, user);
   });
@@ -106,20 +109,143 @@ function isAuthenticated(req, res, next) {
 app.get('/logout',
   function(req, res){
     req.logout();
-    res.redirect('/login');
+    res.redirect('/');
 });
 
 app.get('/login', function(req, res){
   res.render('login',{'message' :req.flash('message')});
 });
 
-// app.get('/', isAuthenticated, function(req, res) {
-//   res.send('welcome');
-// });
+app.get('/forgot_password', function(req, res) {
+  res.render('forgot-pass');
+});
 
-// app.get('/students', isAuthenticated, function(req, res) {
-//   res.render('index');
-// });
+app.post('/forgot_password', function(req, res, next) {
+  async.waterfall([
+    function(done) {
+      crypto.randomBytes(20, function(err, buffer) {
+        var token = buffer.toString('hex');
+        console.log(token);
+        done(err, token);
+      });
+    },
+    function(token, done) {
+      var email_address = req.body.email_address;
+      con.query('select * from users where email_address = ?', [email_address], function(err, rows) {
+        console.log(err);
+        if (!rows.length) {
+          req.flash ('error', 'No account with that email address');
+          return res.redirect('/forgot_password');
+        } else {
+          email_address = rows[0].email_address;
+          console.log(email_address);
+          pwdToken = rows[0].token_pass;
+          pwdToken = token;
+          console.log(pwdToken);
+          pwdExp = rows[0].token_exp;
+          pwdExp = new moment().add(10, 'm').toDate();
+          console.log(pwdExp);
+
+          con.query('update users set token_pass = ?, token_exp = ? where email_address = ?', [pwdToken, pwdExp, email_address], function(err, rows) {
+            done(err, token, rows);
+            console.log(rows);
+          });
+        }
+      });
+    },
+    function(token, rows, done) {
+      const sgMail = require('@sendgrid/mail');
+      sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+      const msg = {
+        to: [req.body.email_address],
+        from: 'reset-pass@example.org',
+        subject: 'Password help has arrived!',
+        text: 'Your are receiving this bacause, your request to reset password has been processed. Click the url to reset your password.\n\n' +
+        'http://' + req.headers.host + '/reset-password/'+ token + '\n\n' +
+        'If you did not request this, please ignore this email and your password will remain unchanged.\n',
+      };
+      sgMail.send(msg, function(err) {
+        req.flash('info', 'An email has been sent to your email address' + req.body.email_address+ 'with instructions.');
+        done(err, 'done')
+      });
+  }], 
+    function(err) {
+    if(err) return next(err);
+    res.redirect('/');
+  });
+});  
+
+app.get('/reset-password/:token', function(req, res) {
+  con.query('select * from users where token_pass = ?',[req.params.token], function (err, user_name) {
+    if (!user_name) {
+      req.flash('error', 'Invalid token')
+      return res.redirect('reset');
+    }
+  res.render('request');
+});
+});
+
+app.post('/reset-password/:token', function(req, res) {
+  async.waterfall([
+    function(done) {
+      con.query('select * from users where token_pass = ?', [req.params.token], function (err, rows) {
+        console.log(rows)
+        if (!rows.length > 0 ) {
+          req.flash('error', 'Invalid Token.');
+          return res.redirect('/forgot-password');
+        }
+        var password = req.body.password;
+        console.log(password);
+        var token_pass = undefined;
+        var token_exp = undefined;
+        var pwd = crypto.createHash('sha1').update(password).digest('hex');
+        con.query('update users set password = ?, token_pass = ?, token_exp = ? where token_pass = ?', [pwd, token_pass, token_exp, req.params.token], function(err, rows) {
+          done(err, rows);
+          console.log(rows);
+        });
+      });
+    },
+  //   function(rows, done) {
+  //     const sgMail = require('@sendgrid/mail');
+  //     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  //     const msg = {
+  //       to: [req.body.email_address],
+  //       from: 'reset-pass@example.org',
+  //       subject: 'Password',
+  //       text: 'Your password has been changed',
+  //     };
+  //     sgMail.send(msg, function(err) {
+  //       req.flash('info', 'Sucess');
+  //       done(err, 'done');
+  //     });
+  // }
+], 
+    function (err) {
+    res.redirect('/');
+  });
+}); 
+
+app.get('/user', function(req, res) {
+  res.render('user', {'message' :req.flash('message')});
+});
+
+app.post('/user', function (req, res) {
+  var paswd = req.body.password;
+  var createUser = {
+    student_id: req.body.student_id,
+    email_address: req.body.email_address,
+    user_name: req.body.user_name,
+    password: crypto.createHash('sha1').update(paswd).digest('hex')
+  };
+  con.query('INSERT INTO users SET ? ', createUser, function(err, rows, fields) {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log(rows);
+        }
+        res.redirect('/');
+      });
+  });
 
 app.get('/', function(req, res) {
   res.render('home');
@@ -283,32 +409,6 @@ app.get('/students/:id', function(req, res){
 	});
 });
 
-// 			// if user found
-// 			// render to views/index.pug template file
-// 			res.render('edit', {
-// 				title: 'Edit Student', 
-//         student_id: rows[0].student_id,
-// 				first_name: rows[0].first_name,
-// 				middle_name: rows[0].middle_name,
-//         last_name: rows[0].last_name,
-//         gender: rows[0].gender,
-// 				place_of_birth: rows[0].place_of_birth,
-//         date_of_birth: formatDate(rows[0].date_of_birth),
-//         phone_number: rows[0].phone_number,
-//         email_address: rows[0].email_address,
-//         date_time: dateTime,
-//         sOldId: rows[0].student_id
-// 			})
-// 		}            
-// 	});
-// });
-
-///
-/// HTTP Method	: POST
-/// Endpoint 	: /updated-student
-/// 
-/// To insert or update student data in MySQL database.
-///
 app.post('/updated-student', function(req, res) {
 	var student_id = req.body.student_id;
 	var first_name = req.body.first_name;
@@ -327,8 +427,12 @@ app.post('/updated-student', function(req, res) {
 
   
 	if(studentOldId !== undefined && studentOldId !== '') {
-		con.query('UPDATE student SET student_id = ?, first_name = ?, middle_name = ?, last_name = ?, gender = ? ,place_of_birth = ?, date_of_birth = ?, phone_number = ?, email_address = ?, date_time = ? WHERE student_id = ?', [student_id, first_name, middle_name, last_name, gender, place_of_birth, date_of_birth, phone_number, email_address, date_time, studentOldId], function (error, results, fields) {
-			if (error) throw error;
+    con.query('UPDATE student SET student_WHERE id_student = ?', student_id, function(err, rows, fields) {
+    //, first_name = ?, middle_name = ?, last_name = ?, gender = ? ,place_of_birth = ?, date_of_birth = ?, phone_number = ?, email_address = ?, date_time = ? WHERE student_id = ?', [student_id, first_name, middle_name, last_name, gender, place_of_birth, date_of_birth, phone_number, email_address, date_time, studentOldId], function (error, results, fields) {
+      if (error) throw error;
+      if (rows[0].length > 0 ) {
+        alert ('Your ID duplicated !');
+      }
 			res.redirect('/students');
 		});
 	} else {
@@ -361,41 +465,19 @@ app.post('/delete/:id', function (req, res) {
     return copy;
     }
   
-  app.get('/statistics', function(req, res)  {
-    var getMonth = []; getFreq = []; temp_MonthFreq=[]; trans_month=[]; getGender = []; getFreqGen = []; temp_genderFreq=[]; trans_gend=[];
-    con.query('select * from frek', function(err, rows, fields) {
-       if (err) {
+  app.get('/students/statistics/:year', function(req, res)  {
+    var getMonth = []; getFreq = []; month = []; freq = [] ; temp_MonthFreq=[]; trans_month=[]; getGender = []; getFreqGen = []; temp_genderFreq=[]; trans_gend=[];
+    getMonth.push('month', 'JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER');
+    getFreq.push('freq', 0,0,0,0,0,0,0,0,0,0,0,0);
+    con.query('SELECT month(date_time) as month, count(*) as freq FROM student WHERE year(date_time)='+[req.params.year]+' group by month(date_time)', function(err, rows, fields) {
+      console.log(rows);
+      if (err) {
           console.log(err);
         } else {
-          getMonth.push('mount')
-          getFreq.push('freq')
+          // getFreq.push('freq')
           for (var j = 0 ; j < rows.length ; j++) {
-          if (rows[j].month === 1) {
-            getMonth.push ('JANUARY')  
-          } else if (rows[j].month === 2 ) {
-            getMonth.push ('FEBRUARY')
-          } else if (rows[j].month === 3 ) {
-            getMonth.push ('MARCH')
-          } else if (rows[j].month === 4 ) { 
-            getMonth.push ('APRIL')  
-          } else if (rows[j].month === 5 ) {
-            getMonth.push ('MAY') 
-          } else if (rows[j].month === 6 ) { 
-            getMonth.push (JUNE)    
-          } else if (rows[j].month === 7 ) {  
-            getMonth.push ('JULY')  
-          } else if (rows[j].month === 8 ) {   
-            getMonth.push ('AUGUST')
-          } else if (rows[j].month === 9 ) {   
-            getMonth.push ('SEPTEMBER') 
-          } else if (rows[j].month === 10 ) {    
-            getMonth.push ('OCTOBER') 
-          } else if (rows[j].month === 11 ) {    
-            getMonth.push ('NOVEMBER') 
-          } else if (rows[j].month === 12 ) {    
-            getMonth.push ('DECEMBER')   
-          }     
-            getFreq.push(rows[j].freq)       
+            var month = rows[j].month;
+            getFreq.fill(rows[j].freq, month, month+1);       
           }
           temp_MonthFreq.push(getMonth,getFreq)
         }
