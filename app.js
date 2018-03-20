@@ -104,7 +104,8 @@ app.get('/logout',
 });
 
 app.get('/login', function(req, res) {
-  res.render('login',{'message' :req.flash('message')});
+  res.render('login',{'message' :req.flash('message')
+  });
 });
 
 app.get('/forgot_password', function(req, res) {
@@ -347,7 +348,7 @@ app.post('/input', function (req, res) {
    date_time: req.body.date_time
   }
   console.log(createStudent);
-
+  
   con.query('INSERT INTO student SET ?', createStudent, function (error, results, fields) {
     if (error) throw error;
     console.log("1 record inserted");
