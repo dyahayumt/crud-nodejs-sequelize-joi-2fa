@@ -16,7 +16,7 @@ source ./sendgrid.env
 4.  Run using npm 
 ``` npm start ``` 
 5. Access with using this address 
-``` http://localhost:3000/students ```
+``` http://localhost:3000/ ```
  
 6. Username : Dyah, Password: login
 
