@@ -8,7 +8,7 @@
 3. Type this command in terminal 
 
 ```
-echo "export SENDGRID_API_KEY='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'" > sendgrid.envB
+echo "export SENDGRID_API_KEY='YOUR_API_KEY'" > sendgrid.envB
 echo "sendgrid.env" >> .gitignore
 
 source ./sendgrid.env
