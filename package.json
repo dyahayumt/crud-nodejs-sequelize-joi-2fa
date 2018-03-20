@@ -1,5 +1,5 @@
 {
-  "name": "student_info",
+  "name": "student-information-system",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -61,5 +61,8 @@
     "url": "https://github.com/dyahayumt/student-information-system/issues"
   },
   "homepage": "https://github.com/dyahayumt/student-information-system#readme",
-  "description": "### This is a simple CRUD of Students Web Server-Client. There is student_info.sql which used as backup of database. With using : Javascript, mysql, bootstrap, and Google Chart"
+  "description": "### This is a simple CRUD of Students Web Server-Client. There is student_info.sql which used as backup of database. With using : Javascript, mysql, bootstrap, and Google Chart",
+  "directories": {
+    "test": "test"
+  }
 }

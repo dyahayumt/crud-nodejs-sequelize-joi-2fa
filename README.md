@@ -18,7 +18,7 @@ source ./sendgrid.env
 5. Access with using this address 
 ``` http://localhost:3000/ ```
  
-6. Username : Dyah, Password: login
+
 
 
 
