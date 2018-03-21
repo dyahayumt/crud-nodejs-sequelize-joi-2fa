@@ -76,10 +76,10 @@ router.get('/students/:id', function(req, res) {
             last_name: rows[0].last_name,
             gender: rows[0].gender,
 				    place_of_birth: rows[0].place_of_birth,
-            date_of_birth: formatDateTime(rows[0].date_of_birth),
+            date_of_birth: moment(rows[0].date_of_birth).format('YYYY-MM-DD'),
             phone_number: rows[0].phone_number,
             email_address: rows[0].email_address,
-            date_time: formatDateTime(rows[0].date_time),
+            date_time: moment(rows[0].date_time).format('YYYY-MM-DD'),
             sOldId: rows[0].student_id
         })
 		}            
