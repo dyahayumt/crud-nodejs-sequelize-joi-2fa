@@ -10,4 +10,6 @@ coba.pug
 login
 statistics-line.pug
 sendgrid.env
+config/
+sendgrid.env
 

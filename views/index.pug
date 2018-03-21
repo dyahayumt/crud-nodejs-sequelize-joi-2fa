@@ -73,10 +73,10 @@ margin-left: 80px;\
           td= student.last_name
           td= student.gender
           td= student.place_of_birth
-          td= student.date_of_birth
+          td= moment(student.date_of_birth).format('DD-MM-YYYY')
           td= student.phone_number
           td= student.email_address
-          td= student.date_time
+          td= moment(student.date_time).format('DD-MM-YYYY')
           td
            form.form-inline(action='/delete/'+student.student_id, method="POST" )
                     button.btn.btn-info(type="submit", role='button', onclick="return confirm('are you sure want to delete ?')") Delete
