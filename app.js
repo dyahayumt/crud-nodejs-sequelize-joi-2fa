@@ -7,7 +7,6 @@ const bodyParser        = require('body-parser');
 const index             = require('./routes/index');
 const users             = require('./routes/users');
 const con               = require('./routes/dbconfig');
-const flash             = require('connect-flash');
 const alert             = require('alert-node');
 const crypto            = require('crypto');
 const passport          = require('passport');
@@ -31,7 +30,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(flash());
 
 app.use(session({
   name: 'JSESSION',
@@ -52,19 +50,19 @@ passport.use('local', new passportLocal ({
   passReqToCallback: true //passback entire req to call back
 } , function (req, user_name, password, done) {
       if(!user_name || !password ) { 
-        return done(null, false, req.flash('message','All fields are required.')); 
+        return done(null, alert('message','All fields are required.')); 
       }
       con.query("select * from users where user_name = ?", [user_name], function(err, rows){
           console.log(err); 
           console.log(rows);
-        if (err) return done(req.flash('message',err));
+        if (err) return done;
         if(!rows.length) { 
-          return done(null, false, req.flash('message','Invalid username or password.')); 
+          return done(null, false, alert('Invalid username or password.')); 
         }
         var encPassword = crypto.createHash('sha1').update(password).digest('hex');
         var dbPassword  = rows[0].password;
         if(!(dbPassword == encPassword)) {
-            return done(null, false, req.flash('message','Invalid username or password.'));
+            return done(null, false, alert('Invalid username or password.'));
          }
 
         return done(null, rows[0]);
@@ -96,8 +94,7 @@ app.get('/logout',
 });
 
 app.get('/login', function(req, res) {
-  res.render('login',{'message' :req.flash('message')
-  });
+  res.render('login');
 });
 
 app.get('/forgot_password', function(req, res) {
@@ -118,7 +115,7 @@ app.post('/forgot_password', function(req, res, next) {
       con.query('select * from users where email_address = ?', [email_address], function(err, rows) {
         console.log(err);
         if (!rows.length) {
-          req.flash ('error', 'No account with that email address');
+          alert ('No account with that email address');
           return res.redirect('/forgot_password');
         } else {
           email_address = rows[0].email_address;
@@ -149,7 +146,7 @@ app.post('/forgot_password', function(req, res, next) {
         'If you did not request this, please ignore this email and your password will remain unchanged.\n',
       };
       sgMail.send(msg, function(err) {
-        req.flash('info', 'An email has been sent to your email address' + req.body.email_address+ 'with instructions.');
+        alert('An email has been sent to your email address:\n' + req.body.email_address);
         done(err, 'done')
       });
   }], 
@@ -162,7 +159,7 @@ app.post('/forgot_password', function(req, res, next) {
 app.get('/reset-password/:token', function(req, res) {
   con.query('select * from users where token_pass = ?',[req.params.token], function (err, user_name) {
     if (!user_name) {
-      req.flash('error', 'Invalid token')
+      alert('Invalid token')
       return res.redirect('reset');
     }
   res.render('request');
@@ -175,7 +172,7 @@ app.post('/reset-password/:token', function(req, res) {
       con.query('select * from users where token_pass = ?', [req.params.token], function (err, rows) {
         console.log(rows)
         if (!rows.length > 0 ) {
-          req.flash('error', 'Invalid Token.');
+          alert('Invalid Token.');
           return res.redirect('/forgot-password');
         }
         var password = req.body.password;
@@ -196,7 +193,7 @@ app.post('/reset-password/:token', function(req, res) {
 }); 
 
 app.get('/user', function(req, res) {
-  res.render('user', {'message' :req.flash('message')});
+  res.render('user');
 });
 
 app.post('/user', function (req, res) {
@@ -239,9 +236,8 @@ app.get('/', function(req, res) {
 app.post("/login", passport.authenticate('local', {
   successRedirect: '/students',
   failureRedirect: '/login',
-  failureFlash: true
 }), function(req, res, info){
-  res.render('login',{'message' :req.flash('message')});
+  res.render('login');
 });
   
 function getStudentGender(rows, studentGender){

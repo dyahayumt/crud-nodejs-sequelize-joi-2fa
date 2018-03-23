@@ -5,9 +5,7 @@ const logger            = require('morgan');
 const cookieParser      = require('cookie-parser');
 const bodyParser        = require('body-parser');
 const con               = require('../routes/dbconfig');
-//const expressValidator  = require('express-validator');
 const alert             = require('alert-node');
-const flash             = require('connect-flash');
 const crypto            = require('crypto');
 const passport          = require('passport');
 const passportLocal     = require('passport-local').Strategy;
@@ -81,7 +79,6 @@ router.get('/students/:id', function(req, res) {
 		
 		// if user not found
 		if (rows.length <= 0) {
-				// req.flash('error', 'Student not found with id = ' + req.params.id)
 				res.redirect('/students')
 		}
 		else { // if user found
