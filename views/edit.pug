@@ -12,10 +12,10 @@ html
       }
       header{
       padding: 1em;
-      color: #000000;
-      background-color: #b6bdc6;
       clear: left;
       text-align: center;
+      margin-bottom: 20px;
+      border: 0px;
       }
       nav {
       float: left;
@@ -42,10 +42,16 @@ html
       .container
         header
           link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css', integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm', crossorigin='anonymous')
-          .card.text-center
-            .card-header
-              h2
-                | Input New Student
+          .card.text-center(style='\
+border-left-width: 0px;\
+border-top-width: o;\
+padding-bottom: 0px;\
+border-top-width: 0px;\
+border-right-width: 0px;\
+border-bottom-width: 0px;\
+')
+            h1
+              | Edit Student Details
         body
           .form-group.row
             label.col-3.col-form-label(for='example-text-input') Student ID

@@ -7,21 +7,22 @@ const bodyParser        = require('body-parser');
 const index             = require('./routes/index');
 const users             = require('./routes/users');
 const con               = require('./routes/dbconfig');
-const app               = express();
 const flash             = require('connect-flash');
 const crypto            = require('crypto');
 const passport          = require('passport');
 const passportLocal     = require('passport-local').Strategy;
 const async             = require('async');
-app.locals.moment       = require('moment');
 const moment            = require('moment');
 const session           = require('express-session');
 const Store             = require('express-session').Store;
 const BetterMemoryStore = require('session-memory-store')(session);
 
-// view engine setup
+const app               = express();
+
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+
+app.locals.moment       = require('moment');
 
 // uncomment after placing your favicon in /public
 app.use(logger('dev'));
@@ -257,47 +258,20 @@ app.get('/students', isAuthenticated, function(req, res) {
   })
 });
 
-app.post('/search', function(req, res) {
-  // var sql = "SELECT * FROM ?? WHERE ?? = ?";
-  // var inserts = ['users', 'id', userId];
-  // sql = mysql.format(sql, inserts);
-  var studentFilter = [];
-  var keyword = req.body.keyword;
-  var opt = req.body.opt;
-  var sortBy = req.body.sortBy;
-  var mysqlquery;
-  var sort= req.body.sort;
-
-  //con.query('SELECT * FROM student WHERE ?? LIKE  \'?%' + keyword+'?%\' ORDER BY ?? ?? '+sort[opt, sortBy, opt], function(err, rows, fields) {
-  con.query('SELECT * FROM student WHERE '+opt+' LIKE  \'%' + keyword +'%\' ORDER BY '+opt+' '+sortBy+'', function(err, rows, fields) {
-    if (err) {
-      res.status(500).json({"status_code": 500,"status_message": "internal server error"});
-    } else {
+app.get('/search', function(req, res) {
+  var keyword = req.query.keyword;
+  var opt= req.query.opt;
+  var sortBy= req.query.sortBy;
+  var select_student = "SELECT * FROM student where ?? like concat('%', ? ,'%') order by ??";
+  con.query(select_student+sortBy, [opt, keyword, opt],function(err, rows, fields) {
+      if (err) {
+        console.log(err);
+      } else {
       console.log(rows);
-   // console.log(sql, function(err, rows, fields){
-      // Loop check on each row
-    //   for (var i = 0; i < rows.length; i++) {
-    //     var student = {
-    //       'student_id':rows[i].student_id,
-    //       'first_name':rows[i].first_name,
-    //       'middle_name':rows[i].middle_name,
-    //       'last_name':rows[i].last_name,
-    //       'gender': rows[i].gender,
-    //       'place_of_birth':rows[i].place_of_birth,
-    //       'date_of_birth':moment(rows[i].date_of_birth).format('YYYY-MM-DD'),
-    //       'phone_number': rows[i].phone_number,
-    //       'email_address': rows[i].email_address,
-    //       'date_time': moment(rows[i].date_time).format('YYYY-MM-DD')
-    //     }
-    //    // Add object into array
-    //     studentFilter.push(student);
-    // }
-    // Render index.pug page using array 
-    res.render('index.pug', {title: 'Student Filter', data: rows});
-    }
-  }
-);
-});
+      res.render('index', {title: 'Student List', data: rows});
+      }
+    });
+  });
 
 app.use('/', isAuthenticated, index);
 // catch 404 and forward to error handler

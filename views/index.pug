@@ -24,28 +24,26 @@ margin-left: 80px;\
                   input.btn.btn-secondary(type='submit' value='Input New Student')
     form(action='/students/statistics/2018', method='GET')
                   input.btn.btn-secondary(type='submit' value='Get Students Gender Statistics')             
-    form(action='/search', method='POST')
     .card-body
           .table-responsive
            nav.navbar.navbar-expand-sm.pull-sm-left
             table.table
-              form(action='/search', method='POST')
+              form(action='/search', method='GET')
                 .form-row
                   .col-5
                     .form-group
-                      input.form-control(type='text', placeholder='Keyword', name='keyword', value=keyword)
+                      input.form-control(type='text', placeholder='Keyword', name='keyword')
                   .col-3
                     .form-group
-                      select.form-control(name="opt")
-                        option(name="opt", value="opt") By
-                        option(name="student_id", value="student_id") Student ID
-                        option(name="first_name", value="first_name") First name
-                        option(name="place_of_birth", value="place_of_birth") POB
+                      select.form-control(name='opt')
+                        option(value='student_id') Student ID
+                        option(value='first_name') First name
+                        option(value='place_of_birth') POB
                   .col-3
                     .form-group
-                      select.form-control(name="sortBy")
-                        option(name='desc', value="DESC") DESC
-                        option(name='asc', value="ASC") ASC
+                      select.form-control(name='sortBy')
+                        option(value='DESC') DESC
+                        option(value='ASC') ASC
                   .col-1
                     input.btn.btn-dark(type='submit', value='Search')
   .container-full
