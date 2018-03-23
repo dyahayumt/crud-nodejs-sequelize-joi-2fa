@@ -6,6 +6,7 @@ const cookieParser      = require('cookie-parser');
 const bodyParser        = require('body-parser');
 const con               = require('../routes/dbconfig');
 //const expressValidator  = require('express-validator');
+const alert             = require('alert-node');
 const flash             = require('connect-flash');
 const crypto            = require('crypto');
 const passport          = require('passport');
@@ -35,6 +36,7 @@ router.get('/input', function (req, res) {
 router.post('/input', function (req, res) {
   // this is where you handle the POST request.
   //if (dobval == true)
+  var student_id = req.body.student_id;
   var createStudent = {
    student_id: req.body.student_id,
    first_name: req.body.first_name,
@@ -48,13 +50,29 @@ router.post('/input', function (req, res) {
    date_time: req.body.date_time
   }
   console.log(createStudent);
-  
-  con.query('INSERT INTO student SET ?', createStudent, function (error, results, fields) {
-    if (error) throw error;
-    console.log("1 record inserted");
-		res.redirect('/students');
-  });
-})
+  con.query('select * from student where student_id = ?', student_id ,function (err, rows, fields) {
+    console.log(rows.length);
+    if (rows.length > 0 ) {
+      alert("Duplicate entry user name!");
+      } else {
+        con.query('insert into student set ?', createStudent, function(err, rows, fields) {
+          if (err) {
+                    console.log(err);
+                  } else {
+                    console.log(rows);
+                  }
+                  res.redirect('/students');
+        });
+      }
+    })
+});
+
+//   con.query('INSERT INTO student SET ?', createStudent, function (error, results, fields) {
+//     if (error) throw error;
+//     console.log("1 record inserted");
+// 		res.redirect('/students');
+//   });
+// })
 
 router.get('/students/:id', function(req, res) {
 	con.query('SELECT * FROM student WHERE student_id = ?', [req.params.id], function(err, rows, fields) {

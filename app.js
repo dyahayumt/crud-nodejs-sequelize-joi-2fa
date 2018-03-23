@@ -8,6 +8,7 @@ const index             = require('./routes/index');
 const users             = require('./routes/users');
 const con               = require('./routes/dbconfig');
 const flash             = require('connect-flash');
+const alert             = require('alert-node');
 const crypto            = require('crypto');
 const passport          = require('passport');
 const passportLocal     = require('passport-local').Strategy;
@@ -200,21 +201,36 @@ app.get('/user', function(req, res) {
 
 app.post('/user', function (req, res) {
   var paswd = req.body.password;
+  var user_name = req.body.user_name;
+  var email_address= req.body.email_address;
   var createUser = {
     student_id: req.body.student_id,
     email_address: req.body.email_address,
     user_name: req.body.user_name,
     password: crypto.createHash('sha1').update(paswd).digest('hex')
   };
-  con.query('INSERT INTO users SET ? ', createUser, function(err, rows, fields) {
-        if (err) {
-          console.log(err);
+    con.query('select * from users where user_name = ?', user_name ,function (err, rows, fields) {
+      console.log(rows.length);
+      if (rows.length > 0 ) {
+        alert("Duplicate entry user name!");
+      } else {
+        con.query('select * from users where email_address = ?', email_address, function(err, rows, fields) {
+        if (rows.length > 0 ) {
+          alert("Duplicate entry email address");
         } else {
-          console.log(rows);
+          con.query('insert into users set ?', createUser, function(err, rows, fields) {
+            if (err) {
+                      console.log(err);
+                    } else {
+                      console.log(rows);
+                    }
+                    res.redirect('/');
+          });
         }
-        res.redirect('/');
-      });
-  });
+      })
+    };
+});
+});
 
 app.get('/', function(req, res) {
   res.render('home');
