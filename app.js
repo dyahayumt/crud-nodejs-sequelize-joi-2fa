@@ -6,6 +6,7 @@ const cookieParser      = require('cookie-parser');
 const bodyParser        = require('body-parser');
 const index             = require('./routes/index');
 const users             = require('./routes/users');
+const reset             = require('./routes/reset-pass');
 const con               = require('./routes/dbconfig');
 const alert             = require('alert-node');
 const crypto            = require('crypto');
@@ -97,142 +98,6 @@ app.get('/login', function(req, res) {
   res.render('login');
 });
 
-app.get('/forgot_password', function(req, res) {
-  res.render('forgot-pass');
-});
-
-app.post('/forgot_password', function(req, res, next) {
-  async.waterfall([
-    function(done) {
-      crypto.randomBytes(20, function(err, buffer) {
-        var token = buffer.toString('hex');
-        console.log(token);
-        done(err, token);
-      });
-    },
-    function(token, done) {
-      var email_address = req.body.email_address;
-      con.query('select * from users where email_address = ?', [email_address], function(err, rows) {
-        console.log(err);
-        if (!rows.length) {
-          alert ('No account with that email address');
-          return res.redirect('/forgot_password');
-        } else {
-          email_address = rows[0].email_address;
-          console.log(email_address);
-          pwdToken = rows[0].token_pass;
-          pwdToken = token;
-          console.log(pwdToken);
-          pwdExp = rows[0].token_exp;
-          pwdExp = new moment().add(10, 'm').toDate();
-          console.log(pwdExp);
-
-          con.query('update users set token_pass = ?, token_exp = ? where email_address = ?', [pwdToken, pwdExp, email_address], function(err, rows) {
-            done(err, token, rows);
-            console.log(rows);
-          });
-        }
-      });
-    },
-    function(token, rows, done) {
-      const sgMail = require('@sendgrid/mail');
-      sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-      const msg = {
-        to: [req.body.email_address],
-        from: 'reset-pass@example.org',
-        subject: 'Password help has arrived!',
-        text: 'Your are receiving this bacause, your request to reset password has been processed. Click the url to reset your password.\n\n' +
-        'http://' + req.headers.host + '/reset-password/'+ token + '\n\n' +
-        'If you did not request this, please ignore this email and your password will remain unchanged.\n',
-      };
-      sgMail.send(msg, function(err) {
-        alert('An email has been sent to your email address:\n' + req.body.email_address);
-        done(err, 'done')
-      });
-  }], 
-    function(err) {
-    if(err) return next(err);
-    res.redirect('/');
-  });
-});  
-
-app.get('/reset-password/:token', function(req, res) {
-  con.query('select * from users where token_pass = ?',[req.params.token], function (err, user_name) {
-    if (!user_name) {
-      alert('Invalid token')
-      return res.redirect('reset');
-    }
-  res.render('request');
-});
-});
-
-app.post('/reset-password/:token', function(req, res) {
-  async.waterfall([
-    function(done) {
-      con.query('select * from users where token_pass = ?', [req.params.token], function (err, rows) {
-        console.log(rows)
-        if (!rows.length > 0 ) {
-          alert('Invalid Token.');
-          return res.redirect('/forgot-password');
-        }
-        var password = req.body.password;
-        console.log(password);
-        var token_pass = undefined;
-        var token_exp = undefined;
-        var pwd = crypto.createHash('sha1').update(password).digest('hex');
-        con.query('update users set password = ?, token_pass = ?, token_exp = ? where token_pass = ?', [pwd, token_pass, token_exp, req.params.token], function(err, rows) {
-          done(err, rows);
-          console.log(rows);
-        });
-      });
-    },
-], 
-    function (err) {
-    res.redirect('/');
-  });
-}); 
-
-app.get('/user', function(req, res) {
-  res.render('user');
-});
-
-app.post('/user', function (req, res) {
-  var paswd = req.body.password;
-  var user_name = req.body.user_name;
-  var email_address= req.body.email_address;
-  var createUser = {
-    student_id: req.body.student_id,
-    email_address: req.body.email_address,
-    user_name: req.body.user_name,
-    password: crypto.createHash('sha1').update(paswd).digest('hex')
-  };
-    con.query('select * from users where user_name = ?', user_name ,function (err, rows, fields) {
-      console.log(rows.length);
-      if (rows.length > 0 ) {
-        alert("Duplicate entry user name!");
-      } else {
-        con.query('select * from users where email_address = ?', email_address, function(err, rows, fields) {
-        if (rows.length > 0 ) {
-          alert("Duplicate entry email address");
-        } else {
-          con.query('insert into users set ?', createUser, function(err, rows, fields) {
-            if (err) {
-                      console.log(err);
-                    } else {
-                      console.log(rows);
-                    }
-                    res.redirect('/');
-          });
-        }
-      })
-    };
-});
-});
-
-app.get('/', function(req, res) {
-  res.render('home');
-});
-
 app.post("/login", passport.authenticate('local', {
   successRedirect: '/students',
   failureRedirect: '/login',
@@ -248,13 +113,6 @@ function getStudentGender(rows, studentGender){
   }
   return gender;
 }
-
-///
-/// HTTP Method	: GET
-/// Endpoint 	: /person
-/// 
-/// To get collection of person saved in MySQL database.
-///
 
 app.get('/students', isAuthenticated, function(req, res) {
   var studentList = [];
@@ -285,7 +143,9 @@ app.get('/search', function(req, res) {
     });
   });
 
-app.use('/', isAuthenticated, index);
+app.use('/', index);
+app.use('/', reset);
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');

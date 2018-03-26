@@ -16,24 +16,19 @@ const Store             = require('express-session').Store;
 const BetterMemoryStore = require('session-memory-store')(session);
 const router            = express.Router();
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-   conn.connect(function(err) {
-     if (err) throw err;
-     console.log("Connected!");
-   });
-  
-   res.send('express');    
- });
+function isAuthenticated(req, res, next) {
+  if (req.isAuthenticated())
+    return next();
+  res.redirect('/login');
+}
 
-router.get('/input', function (req, res) {
+router.get('/input', isAuthenticated,function (req, res) {
     res.render('input');
 });
 
  //write student details
 router.post('/input', function (req, res) {
   // this is where you handle the POST request.
-  //if (dobval == true)
   var student_id = req.body.student_id;
   var createStudent = {
    student_id: req.body.student_id,
@@ -51,7 +46,7 @@ router.post('/input', function (req, res) {
   con.query('select * from student where student_id = ?', student_id ,function (err, rows, fields) {
     console.log(rows.length);
     if (rows.length > 0 ) {
-      alert("Duplicate entry user name!");
+      alert("Duplicate entry ID!");
       } else {
         con.query('insert into student set ?', createStudent, function(err, rows, fields) {
           if (err) {
@@ -65,14 +60,44 @@ router.post('/input', function (req, res) {
     })
 });
 
-//   con.query('INSERT INTO student SET ?', createStudent, function (error, results, fields) {
-//     if (error) throw error;
-//     console.log("1 record inserted");
-// 		res.redirect('/students');
-//   });
-// })
+router.get('/user', isAuthenticated, function(req, res) {
+  res.render('user');
+});
 
-router.get('/students/:id', function(req, res) {
+router.post('/user', function (req, res) {
+  var paswd = req.body.password;
+  var user_name = req.body.user_name;
+  var email_address= req.body.email_address;
+  var createUser = {
+    student_id: req.body.student_id,
+    email_address: req.body.email_address,
+    user_name: req.body.user_name,
+    password: crypto.createHash('sha1').update(paswd).digest('hex')
+  };
+    con.query('select * from users where user_name = ?', user_name ,function (err, rows, fields) {
+      console.log(rows.length);
+      if (rows.length > 0 ) {
+        alert("Duplicate entry user name!");
+      } else {
+        con.query('select * from users where email_address = ?', email_address, function(err, rows, fields) {
+        if (rows.length > 0 ) {
+          alert("Duplicate entry email address");
+        } else {
+          con.query('insert into users set ?', createUser, function(err, rows, fields) {
+            if (err) {
+                      console.log(err);
+                    } else {
+                      console.log(rows);
+                    }
+                    res.redirect('/students');
+          });
+        }
+      })
+    };
+});
+});
+
+router.get('/students/:id', isAuthenticated,function(req, res) {
 	con.query('SELECT * FROM student WHERE student_id = ?', [req.params.id], function(err, rows, fields) {
 		if(err) throw err
     else console.log(rows);
@@ -101,7 +126,7 @@ router.get('/students/:id', function(req, res) {
 	});
 });
 
-router.post('/updated-student', function(req, res) {
+router.post('/updated-student', isAuthenticated,function(req, res) {
   var student_id = req.body.student_id;
   var first_name = req.body.first_name;
   var middle_name = req.body.middle_name;
@@ -188,7 +213,7 @@ router.post('/delete/:id', function (req, res) {
         }
         var trans_gend = transpose(temp_genderFreq);  
         console.log(trans_gend);
-        res.render('statistics',{obj1: JSON.stringify(trans_month), obj2: JSON.stringify(trans_gend)});
+        res.render('statistics',{student_line: JSON.stringify(trans_month), gender_pie: JSON.stringify(trans_gend)});
       })  
     })  
   });  

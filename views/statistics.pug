@@ -20,7 +20,7 @@ html
         
             
         // Create our data table out of JSON data loaded from server.
-        var data1 = new google.visualization.arrayToDataTable(!{obj1});
+        var data1 = new google.visualization.arrayToDataTable(!{student_line});
 
         var options1 = {'title':'STUDENT DATA STATISTICS',
                        'width':1200,
@@ -32,7 +32,7 @@ html
         chart1.draw(data1, options1);
 
                 // Create our data table out of JSON data loaded from server.
-        var data2 = new google.visualization.arrayToDataTable(!{obj2});
+        var data2 = new google.visualization.arrayToDataTable(!{gender_pie});
 
         var options2 = {'title':'STUDENT GENDER STATISTICS',
                        'width':1000,
