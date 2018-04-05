@@ -10,10 +10,10 @@ html(lang='en')
     // Custom styles for this template
   body
    .container(style='\
-width: 530px;\
+width: 360px;\
 margin-top: 120px;\
 ')
-    form(action="/login" method="POST")
+    form(id='login' name='login' action="/login" method="POST")
       form.form-signin
         .text-center.mb-4
           h1.h3.mb-3.font-weight-normal Student Login
@@ -24,7 +24,14 @@ margin-top: 120px;\
           input#inputPassword.form-control(type='password', placeholder='Password', name="password" required='')
           label(for='inputPassword') Password 
         button.btn.btn-lg.btn-primary.btn-block(type='submit') Sign in
-        a(href='/forgot_password') Forgot Password
+        a(href='/user') Register |
+        a(href='/forgot_password', style='\
+        padding-left: 20px;\
+        ') Forgot Password |
+        a(href='/', style='\
+        padding-left: 20px;\
+        ') Home |
+
       
     script(src='https://code.jquery.com/jquery-3.2.1.slim.min.js', integrity='sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN', crossorigin='anonymous')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js', integrity='sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q', crossorigin='anonymous')

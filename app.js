@@ -1,3 +1,4 @@
+const fs                = require("fs");
 const express           = require('express');
 const path              = require('path');
 const favicon           = require('serve-favicon');
@@ -8,6 +9,15 @@ const index             = require('./routes/index');
 const users             = require('./routes/users');
 const reset             = require('./routes/reset-pass');
 const con               = require('./routes/dbconfig');
+const Sequelize         = require('sequelize');
+//const config          = require('./db');
+const models            = require('./app/models');
+const Student           = require('./app/models/student');
+var basename            = path.basename(module.filename);
+var env                 = process.env.NODE_ENV || 'development';
+var config              = require('./config/config')[env];
+//const db              = require('./db');
+const schema            = require('./valid/student_joi.js');
 const alert             = require('alert-node');
 const crypto            = require('crypto');
 const passport          = require('passport');
@@ -17,7 +27,6 @@ const moment            = require('moment');
 const session           = require('express-session');
 const Store             = require('express-session').Store;
 const BetterMemoryStore = require('session-memory-store')(session);
-
 const app               = express();
 
 app.set('views', path.join(__dirname, 'views'));
@@ -39,6 +48,7 @@ app.use(session({
   resave: true,
   saveUninitialized: true
 }));
+
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -104,15 +114,6 @@ app.post("/login", passport.authenticate('local', {
 }), function(req, res, info){
   res.render('login');
 });
-  
-function getStudentGender(rows, studentGender){
-  if(studentGender === 'M'){
-    gender = 'M';
-  } else {
-    gender = 'F';
-  }
-  return gender;
-}
 
 app.get('/students', isAuthenticated, function(req, res) {
   var studentList = [];
@@ -128,20 +129,22 @@ app.get('/students', isAuthenticated, function(req, res) {
   })
 });
 
-app.get('/search', function(req, res) {
-  var keyword = req.query.keyword;
-  var opt= req.query.opt;
-  var sortBy= req.query.sortBy;
-  var select_student = "SELECT * FROM student where ?? like concat('%', ? ,'%') order by ??";
-  con.query(select_student+sortBy, [opt, keyword, opt],function(err, rows, fields) {
-      if (err) {
-        console.log(err);
-      } else {
-      console.log(rows);
-      res.render('index', {title: 'Student List', data: rows});
-      }
-    });
-  });
+
+// Student.create({
+//   student_id: '3.3.3',
+//   first_name: 'Coba',
+//   last_name: 'coba',
+//   middle_name: 'coba',
+//   gender: 'M',
+//   place_of_birth: 'Wonogiri',
+//   date_of_birth: '1995-07-12',
+//   phone_number: '081929323929',
+//   email_address:'coba@gmail.com',
+//   date_time: '2018-01-01 01:01:01:01',
+// })
+// .then(newStudent => {
+// console.log('New user has been created.');
+// });
 
 app.use('/', index);
 app.use('/', reset);

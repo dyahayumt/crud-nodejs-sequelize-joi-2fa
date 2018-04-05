@@ -8,3 +8,5 @@ student.sql
 coba.pug
 config/
 sendgrid.env
+.env
+
