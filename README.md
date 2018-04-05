@@ -1,6 +1,6 @@
 # Student Web System Information
 
-### This is a simple CRUD of Students Web Server-Client. There is student_info.sql which used as backup of database. With using : Javascript, mysql, bootstrap, SendGrid
+### This is a simple CRUD of Students Web Server-Client. There is student_info.sql which used as backup of database. With using : Javascript, mysql, bootstrap, SendGrid, Sequelize, Joi, Nodemon
 
 ### How to run:
 1. Clone this project 
