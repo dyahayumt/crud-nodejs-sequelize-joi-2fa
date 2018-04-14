@@ -13,7 +13,7 @@ html(lang='en')
 width: 360px;\
 margin-top: 120px;\
 ')
-    form(id='login' name='login' action="/login" method="POST")
+    form(action='/login' method='POST')
       form.form-signin
         .text-center.mb-4
           h1.h3.mb-3.font-weight-normal Student Login
@@ -24,7 +24,7 @@ margin-top: 120px;\
           input#inputPassword.form-control(type='password', placeholder='Password', name="password" required='')
           label(for='inputPassword') Password 
         button.btn.btn-lg.btn-primary.btn-block(type='submit') Sign in
-        a(href='/user') Register |
+        a(href='/register') Register |
         a(href='/forgot_password', style='\
         padding-left: 20px;\
         ') Forgot Password |

@@ -1,19 +1,19 @@
-const db = require('../../db'),
-    sequelize = db.sequelize,
-    Sequelize = db.Sequelize;
+// const db = require('../../db'),
+//     sequelize = db.sequelize,
+//     Sequelize = db.Sequelize;
 
-var models = require("../models");
+// // var models = require("../models");
  
-//Sync Database
-models.sequelize.sync().then(function() {
+// // //Sync Database
+// // models.sequelize.sync().then(function() {
  
-    console.log('Nice! Database looks fine')
+// //     console.log('Nice! Database looks fine')
  
-}).catch(function(err) {
+// // }).catch(function(err) {
  
-    console.log(err, "Something went wrong with the Database Update!")
+// //     console.log(err, "Something went wrong with the Database Update!")
  
-});
+// // });
 module.exports = function(sequelize, Sequelize) {
 
     var Student = sequelize.define('student', {
@@ -64,15 +64,15 @@ module.exports = function(sequelize, Sequelize) {
 
         date_time: {
             type: Sequelize.DATE
-        },
+        }
         
-            table_name:'student',
-            freezeTableName: true,
-            timestamps: true
+        //     table_name:'student',
+        //     freezeTableName: true,
+        //     timestamps: true
         });
 
-    return User;
-    };
+    return Student;
+    }
 
         
 

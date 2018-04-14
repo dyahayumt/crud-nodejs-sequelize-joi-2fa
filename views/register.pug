@@ -10,32 +10,34 @@ html(lang='en')
     // Custom styles for this template
   body
    .container(style='\
-width: 420px;\
+width: 360px;\
 margin-top: 120px;\
 ')
-    form(action="/forgot_password" method="POST")
+    form(action='/register' method='post')
       form.form-signin
         .text-center.mb-4
-          h1.mb-3.font-weight-normal Reset Password
-          br
-          h5 We will send a verification link to your email address
+          h1.h3.mb-3.font-weight-normal Student Login
         .form-label-group
-          input#email_address.form-control(type='email_address', placeholder='Registered Address',value ='',name="email_address" required='')
-          label(for='email_address') 
-          br
-        button.btn.btn-lg.btn-primary.btn-block(type='submit', style='\
-height: 48px;\
-') Reset
-        a(href='/login', style='\
-        padding-left: 80px;\
-        ') | Login |
-        a(href='/register', style='\
-        padding-left: 10px;\
-        ') Register |
+          input#student_id.form-control(type='text', name="student_id" placeholder='Student ID', required='', autofocus='' styles='weight: 20px')
+          label(for='student_id') Student ID
+        .form-label-group
+          input#user_name.form-control(type='text', name="user_name" placeholder='User Name', required='', autofocus='' styles='weight: 20px')
+          label(for='user_name') User Name
+        .form-label-group
+          input#email_address.form-control(type='text', name="email_address" placeholder='Email Address', required='', autofocus='' styles='weight: 20px')
+          label(for='email_address') Email
+        .form-label-group
+          input#password.form-control(type='password', placeholder='Password', name="password" required='')
+          label(for='password') Password 
+        button.btn.btn-lg.btn-primary.btn-block(type='submit') Sign in
+        a(href='/register') Register |
+        a(href='/forgot_password', style='\
+        padding-left: 20px;\
+        ') Forgot Password |
         a(href='/', style='\
-        padding-left: 10px;\
+        padding-left: 20px;\
         ') Home |
-  p.table-center
+
       
     script(src='https://code.jquery.com/jquery-3.2.1.slim.min.js', integrity='sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN', crossorigin='anonymous')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js', integrity='sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q', crossorigin='anonymous')

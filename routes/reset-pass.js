@@ -18,7 +18,8 @@ const session           = require('express-session');
 const Store             = require('express-session').Store;
 const BetterMemoryStore = require('session-memory-store')(session);
 const router            = express.Router();
-
+const models            = require('../app/models');
+const user              = models.users1;
 
 router.get('/', function(req, res) {
   res.render('home');
@@ -39,29 +40,38 @@ router.post('/forgot_password', function(req, res, next) {
     },
     function(token, done) {
       var email_address = req.body.email_address;
-      con.query('select * from users where email_address = ?', [email_address], function(err, rows) {
-        console.log(err);
-        if (!rows.length) {
-          alert ('No account with that email address');
-          return res.redirect('/forgot_password');
-        } else {
-          email_address = rows[0].email_address;
-          console.log(email_address);
-          pwdToken = rows[0].token_pass;
-          pwdToken = token;
-          console.log(pwdToken);
-          pwdExp = rows[0].token_exp;
-          pwdExp = new moment().add(10, 'm').toDate();
-          console.log(pwdExp);
-
-          con.query('update users set token_pass = ?, token_exp = ? where email_address = ?', [pwdToken, pwdExp, email_address], function(err, rows) {
-            done(err, token, rows);
-            console.log(rows);
-          });
-        }
-      });
-    },
-    function(token, rows, done) {
+      //con.query('select * from users1s where email_address = ?', [email_address], function(err, rows) {
+        user.findAll({
+          where : {
+            email_address: email_address
+          }
+        }).then(function(rows, err) {
+          if (!rows.length) {
+            alert ('No account with that email address');
+            return res.redirect('/forgot_password');
+          } else {
+            email_address = rows[0].email_address;
+            console.log(email_address);
+            pwdToken = rows[0].token_pass;
+            pwdToken = token;
+            console.log(pwdToken);
+            pwdExp = rows[0].token_exp;
+            pwdExp = new moment().add(10, 'm').toDate();
+            console.log(pwdExp);
+            user.update({
+              token_pass: pwdToken,
+              token_exp: pwdExp
+            }, {
+              where: {
+                email_address: email_address
+              }
+            }).then(function(user, err) {
+              done(err, token, user);
+            });
+          }
+        });
+      },
+      function(token, rows, done) {
       sgMail.setApiKey(process.env.SENDGRID_API_KEY);
       const msg = {
         to: [req.body.email_address],
@@ -82,40 +92,62 @@ router.post('/forgot_password', function(req, res, next) {
   });
 });  
 
-router.get('/reset-password/:token', function(req, res) {
-  con.query('select * from users where token_pass = ?',[req.params.token], function (err, user_name) {
-    if (!user_name) {
-      alert('Invalid token')
-      return res.redirect('reset');
+
+router.get('/reset-password/:token', function(req, res, next) {
+  //con.query('select * from users1s where token_pass = ?',[req.params.token], function (err, user_name) {
+  var token_pass = req.body.token_pass;
+    user.findAll({
+      where: {
+        token_pass: [req.params.token]
+      }
+    }).then(function(token_pass) {
+      if (!token_pass) {
+        alert('Invalid token?')
+        return res.redirect('/');
     }
-  res.render('request');
+    res.render('request');
 });
 });
 
-router.post('/reset-password/:token', function(req, res) {
+router.post('/reset-password/:token', function(req, res, next) {
+  var token_pass = req.body.token_pass;
+  var email_address = req.body.email_address;
   async.waterfall([
     function(done) {
-      con.query('select * from users where token_pass = ?', [req.params.token], function (err, rows) {
-        console.log(rows)
-        if (!rows.length > 0 ) {
-          alert('Invalid Token.');
-          return res.redirect('/forgot-password');
+      //con.query('select * from users1s where token_pass = ?', [req.params.token], function (err, rows) {
+      user.findAll({
+        where: {
+          token_pass: [req.params.token]
         }
-        var password = req.body.password;
-        console.log(password);
-        var token_pass = undefined;
-        var token_exp = undefined;
-        var pwd = crypto.createHash('sha1').update(password).digest('hex');
-        con.query('update users set password = ?, token_pass = ?, token_exp = ? where token_pass = ?', [pwd, token_pass, token_exp, req.params.token], function(err, rows) {
-          done(err, rows);
-          console.log(rows);
-        });
-      });
-    },
-], 
-    function (err) {
-    res.redirect('/');
-  });
-}); 
+      }).then(function(rows, err) {
+        if (!rows.length) {
+          alert('Invalid Token.');
+          return res.redirect('/reset-password/:token');
+          console.log(rows)
+        } 
+          //var password = req.body.password;
+          var email_address= req.body.email_address;
+          //var pwdToken= req.body.token_pass;
+          //var pwdExp= req.body.token_exp;
+          var password = req.body.password;
+          console.log(password);
+          var token_pass = null;
+          var token_exp = null;
+          var pwd = crypto.createHash('sha1').update(password).digest('hex');
+          var resetToken = {token_pass: token_pass, token_exp: token_exp, password:pwd }
+          user.update(
+            resetToken, {
+            where: {
+              token_pass : req.params.token
+            }  
+            }).then(function(user, err) {
+              done(err, user);
+            });
+          });
+          }], function(err) {
+                if (err) console.log(err);
+                res.redirect('/');
+          });
+        })
 
 module.exports = router;

@@ -1,5 +1,4 @@
-const exports = module.exports = {}
-
+var exports = module.exports = {}
 exports.login = function(req, res) {
   res.render('login');
 }
