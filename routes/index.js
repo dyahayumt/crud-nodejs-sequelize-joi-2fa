@@ -8,6 +8,12 @@ const bodyParser        = require('body-parser');
 const con               = require('../routes/dbconfig');
 const alert             = require('alert-node');
 const crypto            = require('crypto');
+
+const Sequelize             = require('sequelize');
+const basename              = path.basename(module.filename);
+const models                = require('../app/models');
+const user                  = models.user;
+
 const passport          = require('passport');
 const passportLocal     = require('passport-local').Strategy;
 const async             = require('async');
@@ -16,6 +22,7 @@ const session           = require('express-session');
 const Store             = require('express-session').Store;
 const BetterMemoryStore = require('session-memory-store')(session);
 const router            = express.Router();
+
 
 function isAuthenticated(req, res, next) {
   if (req.isAuthenticated())
@@ -67,17 +74,22 @@ router.get('/user', isAuthenticated, function(req, res) {
 
 router.post('/user', function (req, res) {
   var paswd = req.body.password;
-  var user_name = req.body.user_name;
+  var username = req.body.username;
   var email_address= req.body.email_address;
   var createUser = {
-    student_id: req.body.student_id,
+    id: req.body.id,
     email_address: req.body.email_address,
-    user_name: req.body.user_name,
-    password: crypto.createHash('sha1').update(paswd).digest('hex')
+    username: req.body.username,
+    password: crypto.createHash('sha1').update(paswd).digest('hex'),
+    createdAt: moment(req.body.createdAt).format('YYYY-MM-DD'),
+    updatedAt: moment(req.body.updatedAt).format('YYYY-MM-DD'),
+    status: 'Disable',
+    secret_key: 'NULL',
+    qrcode_uri: 'NULL'
   };
-    con.query('select * from users where user_name = ?', user_name ,function (err, rows, fields) {
-      console.log(rows.length);
-      if (rows.length > 0 ) {
+    con.query('select * from users where username = ?', username ,function (err, rows, fields) {
+      //console.log(;
+      if (rows) {
         alert("Duplicate entry user name!");
       } else {
         con.query('select * from users where email_address = ?', email_address, function(err, rows, fields) {

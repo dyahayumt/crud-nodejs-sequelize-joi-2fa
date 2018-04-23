@@ -1,0 +1,82 @@
+html(lang='en')
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
+    meta(name='description', content='')
+    meta(name='author', content='')
+    title Setting
+    // Bootstrap core CSS
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css', integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm', crossorigin='anonymous')
+    // Custom styles for this template
+  body
+    .container(style='\
+  width: 460px;\
+  margin-left: 300px;\
+  ')
+      form(action='/setting')
+  nav.navbar.navbar-expand-lg.navbar-light.bg-light
+    a.navbar-brand(href='/') Home
+    button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarSupportedContent', aria-controls='navbarSupportedContent', aria-expanded='false', aria-label='Toggle navigation')
+      span.navbar-toggler-icon
+    #navbarSupportedContent.collapse.navbar-collapse
+      #navbarNav.collapse.navbar-collapse
+        ul.navbar-nav
+          li.nav-item.active
+            a.nav-link(href='#')
+              span.sr-only (current)
+          li.nav-item
+            a.nav-link(href='/user') Create User
+          li.nav-item
+            a.nav-link(href='/input') Input Student
+          li.nav-item
+            a.nav-link(href='/students/statistics/2018') Student Statistics
+          li.nav-item
+            a.nav-link(href='/setting') Setting
+          li.nav-item
+            a.nav-link(href='/logout') Logout
+      .card-body
+        .table-responsive
+          nav.navbar.navbar-expand-sm.pull-sm-left
+            table.table
+              form(action='/search', method='GET')
+                .form-row
+                  .col-5
+                    .form-group
+                      input.form-control(type='text', placeholder='Keyword', name='keyword')
+                  .col-3
+                    .form-group
+                      select.form-control(name='opt')
+                        option(value='student_id') Student ID
+                        option(value='first_name') First name
+                        option(value='place_of_birth') POB
+                  .col-3
+                    .form-group
+                      select.form-control(name='sortBy')
+                        option(value='DESC') DESC
+                        option(value='ASC') ASC
+                  .col-1
+                    input.btn.btn-dark(type='submit', value='Search')
+
+h1.text-center Setting Page
+  i.fas.fa-cogs 
+  br
+  br
+h8.text-center(style='\
+padding-left: 40;\
+padding-left: 40px;\
+margin-left: 200px;\
+') You can use Code Generator to reset your password or to generate login codes. Set up a third party app to generate codes.  
+    nav.navbar.navbar-expand-lg.navbar-light(style="\
+    position: absolute;\
+    margin-left: 640px;\
+")
+      .float-right
+                //- a.btn.btn-primary(role='button' style='width:auto' id='toggle-2fa-box-enable' name='btn-enable' ) Enable
+                a.btn.btn-primary(role='button' style='width:auto' name='twofa' checked=stwofa=='Enable' href='/enable2fa') Enable
+                a.btn.btn-secondary.float-center(role='button' style='width:auto' name='twofa' checked=stwofa=='Disable' href='/disable2fa' onclick="return confirm('are you sure to disable ?')" ) Disable
+      //- script(type="text/javascript").
+      //-   function clicked(e)
+      //-   {
+      //-       if(!confirm('Are you sure?'))e.preventDefault();
+      //-       else {document.getElementById('f').submit()}
+      //-   }

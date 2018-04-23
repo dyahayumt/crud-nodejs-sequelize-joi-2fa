@@ -1,0 +1,158 @@
+html(lang='en')
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
+    meta(name='description', content='')
+    meta(name='author', content='')
+    title Setting
+    // Bootstrap core CSS
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css', integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm', crossorigin='anonymous')
+    // Custom styles for this template
+  body
+    .container(style='\
+  width: 460px;\
+  margin-left: 300px;\
+  ')
+
+      form(action='/eable2fa', method='GET')
+  nav.navbar.navbar-expand-lg.navbar-light.bg-light
+    a.navbar-brand(href='/') Home
+    button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarSupportedContent', aria-controls='navbarSupportedContent', aria-expanded='false', aria-label='Toggle navigation')
+      span.navbar-toggler-icon
+    #navbarSupportedContent.collapse.navbar-collapse
+      #navbarNav.collapse.navbar-collapse
+        ul.navbar-nav
+          li.nav-item.active
+            a.nav-link(href='#')
+              span.sr-only (current)
+          li.nav-item
+            a.nav-link(href='/user') Create User
+          li.nav-item
+            a.nav-link(href='/input') Input Student
+          li.nav-item
+            a.nav-link(href='/students/statistics/2018') Student Statistics
+          li.nav-item
+            a.nav-link(href='/setting') Setting
+          li.nav-item
+            a.nav-link(href='/logout') Logout
+      .card-body
+        .table-responsive
+          nav.navbar.navbar-expand-sm.pull-sm-left
+            table.table
+              form(action='/search', method='GET')
+                .form-row
+                  .col-5
+                    .form-group
+                      input.form-control(type='text', placeholder='Keyword', name='keyword')
+                  .col-3
+                    .form-group
+                      select.form-control(name='opt')
+                        option(value='student_id') Student ID
+                        option(value='first_name') First name
+                        option(value='place_of_birth') POB
+                  .col-3
+                    .form-group
+                      select.form-control(name='sortBy')
+                        option(value='DESC') DESC
+                        option(value='ASC') ASC
+                  .col-1
+                    input.btn.btn-dark(type='submit', value='Search')
+
+h1.text-center Setting Page
+  i.fas.fa-cogs 
+  br
+  br
+h8.text-center(style='\
+padding-left: 40];\
+padding-left: 40px;\
+margin-left: 200px;\
+') You can use Code Generator to reset your password or to generate login codes. Set up a third party app to generate codes.  
+    nav.navbar.navbar-expand-lg.navbar-light(style="\
+    position: absolute;\
+    margin-left: 640px;\
+")
+              a.btn.btn-primary(role='button' style='width:auto' name='twofa' checked=stwofa=='Enable' href='/enable2fa') Enable
+                a.btn.btn-secondary.float-center(role='button' style='width:auto' name='twofa' checked=stwofa=='Disable' href='/disable2fa' onclick="return confirm('are you sure to disable ?')" ) Disable
+    nav.navbar.navbar-expand-lg.navbar-light(style="\
+    position: absolute;\
+    margin-top: 60px;\
+")
+      button.btn.btn-secondary(type='button', name='generateCode', id='genCode', data-toggle='modal', data-target='#exampleModalCenter', style='margin-leftt: 140px;margin-left: 650px;margin-right: 200px;')  Generate Code
+      #exampleModalCenter.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalCenterTitle', aria-hidden='true')
+        .modal-dialog.modal-dialog-centered(role='document')
+          .modal-content
+            .modal-header
+              h5#exampleModalLongTitle.modal-title Scan QR Code 
+              button.close(type='button', data-dismiss='modal', aria-label='Close')
+                span(aria-hidden='true') ×
+            .modal-body
+              img.rounded(src=qr, alt='Cinque Terre', width='304', height='236' margin-right= '70px' )
+            .modal-footer
+              //- button.btn.btn-secondary(type='button', data-dismiss='modal') Close
+              
+              form(method='POST' action='/twofaauth')
+                        .form-group.row-center(style='\
+                width: 200px;\
+                margin-right: 40px;\
+                margin-bottom: 40px;\
+                ')               
+                        .form-label-group  #{enable}
+                          input#auth.form-control(placeholder='Token',name = "token" value=stoken required='' style='\
+              height: 48px;\
+              margin-right: 40px;\
+              ')
+                          br
+                        button.btn.btn-lg.btn-primary.btn-block(type='submit',value='submit', style='\
+              height: 48px;\
+              ') Verify
+
+                        |
+                        - if(valid){
+                          form.text-center(method='POST' action='/settingcon')
+                            button.shadow.bg-grey-darkest.text-white.font-bold.py-2.px-4.rounded.mb-2(class='hover:bg-purple-light', type='submit' , value='submit')
+                              | CONFIRM 
+                        - }    
+
+                                script(src='https://code.jquery.com/jquery-3.2.1.slim.min.js', integrity='sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN', crossorigin='anonymous')
+                                script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js', integrity='sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q', crossorigin='anonymous')
+                                script(src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js', integrity='sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl', crossorigin='anonymous')
+                                script(defer='', src='https://use.fontawesome.com/releases/v5.0.10/js/all.js', integrity='sha384-slN8GvtUJGnv6ca26v8EzVaR9DC58QEwsIk9q1QXdCU8Yu8ck/tL/5szYlBbqmS+', crossorigin='anonymous')
+                        
+                    
+//- button.btn.btn-primary(type='button', name='generateCode', id='genCode', data-toggle='modal', data-target='#exampleModalCenter', style='margin-leftt: 140px;margin-left: 650px;margin-right: 200px;')  Generate Code
+//- // Modal
+//- #exampleModalCenter.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalCenterTitle', aria-hidden='true')
+//-   .modal-dialog.modal-dialog-centered(role='document')
+//-     .modal-content
+//-       .modal-header
+//-         h5#exampleModalLongTitle.modal-title Scan QR Code 
+//-         button.close(type='button', data-dismiss='modal', aria-label='Close')
+//-           span(aria-hidden='true') ×
+//-       .modal-body
+//-         img.rounded(src=qr, alt='Cinque Terre', width='304', height='236' margin-right= '70px' )
+//-       .modal-footer
+//-         //- button.btn.btn-secondary(type='button', data-dismiss='modal') Close
+        
+//-         form(method='POST' action='/qrgenerator')
+//-                   .form-group.row-center(style='\
+//-           width: 200px;\
+//-           margin-right: 40px;\
+//-           margin-bottom: 40px;\
+//-           ')               
+//-                   .form-label-group
+//-                     input#auth.form-control(placeholder='Token',value ='',name="twofa" required='' style='\
+//-         height: 48px;\
+//-         margin-right: 40px;\
+//-         ')
+//-                     br
+//-                   button.btn.btn-lg.btn-primary.btn-block(type='submit', style='\
+//-         height: 48px;\
+//-         ') Verify
+
+                    script(src='https://code.jquery.com/jquery-3.2.1.slim.min.js', integrity='sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN', crossorigin='anonymous')
+                    script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js', integrity='sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q', crossorigin='anonymous')
+                    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js', integrity='sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl', crossorigin='anonymous')
+                    script(defer='', src='https://use.fontawesome.com/releases/v5.0.10/js/all.js', integrity='sha384-slN8GvtUJGnv6ca26v8EzVaR9DC58QEwsIk9q1QXdCU8Yu8ck/tL/5szYlBbqmS+', crossorigin='anonymous')
+             
+          
+

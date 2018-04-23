@@ -9,43 +9,49 @@ html
     script(src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js')
     script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js')
-
   body
-  nav.navbar.navbar-expand-sm.pull-sm-left(style='\
-margin-left: 80px;\
-')  
-    form(action='/login', method='GET')
-                  input.btn.btn-secondary(type='submit' value='Log in')
-    form(action='/user', method='GET')
-                      input.btn.btn-secondary(type='submit' value='Create New User')              
-    form(action='/logout', method='GET')
-                  input.btn.btn-secondary(type='submit' value='Log Out')              
-    form(action='/input', method='GET')
-                  input.btn.btn-secondary(type='submit' value='Input New Student')
-    form(action='/students/statistics/2018', method='GET')
-                  input.btn.btn-secondary(type='submit' value='Get Students Gender Statistics')             
-    .card-body
+    nav.navbar.navbar-expand-lg.navbar-light.bg-light
+      a.navbar-brand(href='/') Home
+      button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarSupportedContent', aria-controls='navbarSupportedContent', aria-expanded='false', aria-label='Toggle navigation')
+        span.navbar-toggler-icon
+      #navbarSupportedContent.collapse.navbar-collapse
+        #navbarNav.collapse.navbar-collapse
+          ul.navbar-nav
+            li.nav-item.active
+              a.nav-link(href='#')
+                span.sr-only (current)
+            li.nav-item
+              a.nav-link(href='/user') Create User
+            li.nav-item
+              a.nav-link(href='/input') Input Student
+            li.nav-item
+              a.nav-link(href='/students/statistics/2018') Student Statistics
+            li.nav-item
+              a.nav-link(href='/setting') Setting
+            li.nav-item
+              a.nav-link(href='/logout') Logout
+        .card-body
           .table-responsive
-           nav.navbar.navbar-expand-sm.pull-sm-left
-            table.table
-              form(action='/search', method='GET')
-                .form-row
-                  .col-5
-                    .form-group
-                      input.form-control(type='text', placeholder='Keyword', name='keyword')
-                  .col-3
-                    .form-group
-                      select.form-control(name='opt')
-                        option(value='student_id') Student ID
-                        option(value='first_name') First name
-                        option(value='place_of_birth') POB
-                  .col-3
-                    .form-group
-                      select.form-control(name='sortBy')
-                        option(value='DESC') DESC
-                        option(value='ASC') ASC
-                  .col-1
-                    input.btn.btn-dark(type='submit', value='Search')
+            nav.navbar.navbar-expand-lg.pull-lg-left
+              table.table
+                form(action='/search', method='GET')
+                  .form-row
+                    .col-5
+                      .form-group
+                        input.form-control(type='text', placeholder='Keyword', name='keyword')
+                    .col-3
+                      .form-group
+                        select.form-control(name='opt')
+                          option(value='student_id') Student ID
+                          option(value='first_name') First name
+                          option(value='place_of_birth') POB
+                    .col-3
+                      .form-group
+                        select.form-control(name='sortBy')
+                          option(value='DESC') DESC
+                          option(value='ASC') ASC
+                    .col-1
+                      input.btn.btn-dark(type='submit', value='Search')
   .container-full
     h1.text-center Student List
     table.table

@@ -9,7 +9,7 @@ var request = require('supertest');
 describe('GET /students', function(done){
   //let's set up the data we need to pass to the login method
   const userCredentials = {
-    user_name: 'Dyah', 
+    username: 'Dyah', 
     password: '12345678'
   }
 

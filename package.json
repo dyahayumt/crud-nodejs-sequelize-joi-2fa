@@ -32,8 +32,11 @@
     "docker-file-parser": "^1.0.3",
     "dotenv": "^5.0.1",
     "express": "^4.16.3",
+    "express-flash": "0.0.2",
     "express-session": "^1.15.6",
     "fs": "0.0.1-security",
+    "gulp": "^3.9.1",
+    "gulp-nodemon": "^2.2.1",
     "jade": "^1.11.0",
     "joi": "^13.1.2",
     "joi-date-extensions": "^1.1.1",
@@ -49,9 +52,11 @@
     "passport-local-register": "^1.0.4",
     "path": "^0.12.7",
     "pug": "^2.0.3",
+    "qrcode": "^1.2.0",
     "sequelize": "^4.37.6",
     "serve-favicon": "^2.5.0",
     "session-memory-store": "^0.2.2",
+    "speakeasy": "^2.0.0",
     "sqlite3": "^4.0.0"
   },
   "devDependencies": {

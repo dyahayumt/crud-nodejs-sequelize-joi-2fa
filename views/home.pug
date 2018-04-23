@@ -12,24 +12,27 @@ html
 
   body
     form(action='/', method='GET')
-    .cover-container.d-flex.h-100.p-3.mx-auto.flex-column
-      main.inner.cover(role="main" style="\
+    .container-fluid(style="\
     position: absolute;\
     margin-top: 200px;\
-    margin-left: 170px;\
+    margin-left: 30px;\
 ")
         h1.cover-heading.text-center STUDENT INFORMATION SYSTEM
         p.lead.text-center
           | Only applicants and students can login using this page. Please contact administrator of this website to more information.
         p.lead
-          nav.navbar.navbar-expand-sm.pull-sm-left(style='\
-margin-left: 300px;\
-')  
-            form(action='/login', method='GET')
-                        input.btn.btn-secondary(type='submit' value='Log in')                          
-            form(action='/students/statistics/2018', method='GET')
-                        input.btn.btn-secondary(type='submit' value='Get Students Gender Statistics') 
-      footer.mastfoot.mt-auto
-        .inner
-
-            
+    av.navbar.navbar-expand-lg.navbar-light
+      a.navbar-brand(href='/') Home
+        button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarSupportedContent', aria-controls='navbarSupportedContent', aria-expanded='false', aria-label='Toggle navigation')
+          span.navbar-toggler-icon
+        #navbarSupportedContent.collapse.navbar-collapse
+          #navbarNav.collapse.navbar-collapse
+            ul.navbar-nav
+              li.nav-item.active
+                a.nav-link(href='/')
+                  span.sr-only (current)
+              li.nav-item
+                a.nav-link(href='/signin') Login
+              li.nav-item
+                a.nav-link(href='/students/statistics/2018') Student Infomation Statistics
+              li.nav-item

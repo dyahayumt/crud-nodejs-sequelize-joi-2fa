@@ -13,12 +13,12 @@ html(lang='en')
 width: 360px;\
 margin-top: 120px;\
 ')
-    form(action='/login' method='POST')
+    form(action='/signin' method='GET')
       form.form-signin
         .text-center.mb-4
           h1.h3.mb-3.font-weight-normal Student Login
         .form-label-group
-          input#inputUser.form-control(type='text', name="user_name" placeholder='User Name', required='', autofocus='' styles='weight: 20px')
+          input#inputUser.form-control(type='text', name="username" placeholder='User Name', required='', autofocus='' styles='weight: 20px')
           label(for='inputUser') User Name
         .form-label-group
           input#inputPassword.form-control(type='password', placeholder='Password', name="password" required='')

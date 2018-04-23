@@ -189,7 +189,7 @@ DROP TABLE IF EXISTS `user`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user` (
   `student_id` varchar(20) DEFAULT NULL,
-  `user_name` varchar(20) DEFAULT NULL,
+  `username` varchar(20) DEFAULT NULL,
   `password` varchar(60) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -214,7 +214,7 @@ DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `student_id` varchar(15) NOT NULL,
   `email_address` varchar(50) DEFAULT NULL,
-  `user_name` varchar(40) DEFAULT NULL,
+  `username` varchar(40) DEFAULT NULL,
   `password` varchar(60) DEFAULT NULL,
   `token_pass` varchar(200) DEFAULT NULL,
   `token_exp` date DEFAULT NULL,

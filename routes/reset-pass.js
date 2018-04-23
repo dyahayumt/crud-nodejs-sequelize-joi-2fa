@@ -19,7 +19,7 @@ const Store             = require('express-session').Store;
 const BetterMemoryStore = require('session-memory-store')(session);
 const router            = express.Router();
 const models            = require('../app/models');
-const user              = models.users1;
+const user              = models.user;
 
 router.get('/', function(req, res) {
   res.render('home');
@@ -94,7 +94,7 @@ router.post('/forgot_password', function(req, res, next) {
 
 
 router.get('/reset-password/:token', function(req, res, next) {
-  //con.query('select * from users1s where token_pass = ?',[req.params.token], function (err, user_name) {
+  //con.query('select * from user where token_pass = ?',[req.params.token], function (err, user_name) {
   var token_pass = req.body.token_pass;
     user.findAll({
       where: {
